@@ -8,11 +8,10 @@ export default class BaseBrush {
         this.borderSize  = 0;
 
         let defaults = {};
-        Object.assign(this, defaults, options);
+        this.assignOptions(defaults, options);
     }
 
     assignOptions(defaults, options) {
-        this.context = options.context;
         Object.assign(this, defaults, options);
     }
 
