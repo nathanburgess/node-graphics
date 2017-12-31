@@ -7,19 +7,6 @@ import * as Brushes from "./src/Brushes.mjs";
 global.noop = function () {
 };
 
-/**
- * Register a font file for use in the image
- *
- * @param {string} filename - The filename of the font file to register
- * @param {object} options - Some basic settings for this font
- * @param {string} options.family - The font family name
- * @param {string} [options.weight] - An optional font weight
- * @param {string} [options.style] - An optional font style
- */
-function registerFont(filename, options) {
-    Canvas.registerFont(filename, options);
-}
-
 export default class Easel extends EventEmitter {
     constructor(options) {
         super();
@@ -46,6 +33,19 @@ export default class Easel extends EventEmitter {
 
         this.addLayer("base");
         this.activeLayer = this.layers.get("base");
+    }
+
+    /**
+     * Register a font file for use in the image
+     *
+     * @param {string} filename - The filename of the font file to register
+     * @param {object} options - Some basic settings for this font
+     * @param {string} options.family - The font family name
+     * @param {string} [options.weight] - An optional font weight
+     * @param {string} [options.style] - An optional font style
+     */
+    static registerFont(filename, options) {
+        Canvas.registerFont(filename, options);
     }
 
     activateLayer(name) {
@@ -85,7 +85,8 @@ export default class Easel extends EventEmitter {
 
         let cleanup = [];
         this.layers.forEach(layer => {
-            cleanup.push(fs.unlink(layer.filename, () => {}));
+            cleanup.push(fs.unlink(layer.filename, () => {
+            }));
         });
         await Promise.all(cleanup);
         return this;
@@ -106,8 +107,19 @@ export default class Easel extends EventEmitter {
         });
     }
 
+    add(brush) {
+        return this.activeLayer.add(brush);
+    }
+
     createRect(options) {
         return this.activeLayer.createRect(options);
+    }
+
+    createGradient(type, options) {
+        if (type.toLowerCase() === "linear")
+            return this.activeLayer.createLinearGradient(options);
+        else
+            return this.activeLayer.createRadialGradient(options);
     }
 }
 

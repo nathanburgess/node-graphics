@@ -17,6 +17,11 @@ export default class Layer {
         this.filename  = `${os.tmpdir()}/${uuid()}.png`;
     }
 
+    add(brush) {
+        this.brushes.push(brush);
+        return this;
+    }
+
     /**
      * Returns an image that has been re-sized to fit only the area in which something was drawn
      *
@@ -112,7 +117,7 @@ export default class Layer {
     async render() {
         this.drawState = "done";
         this.brushes.forEach(brush => {
-            brush.render(this.context);
+            brush.render();
         });
         await this.save();
     }
@@ -139,9 +144,18 @@ export default class Layer {
         });
     }
 
-    createRect(options) {
-        let rect = new Brushes.Rectangle(options);
-        this.brushes.push(rect);
-        return rect;
+    createRect(options = {}) {
+        options.context = this.context;
+        return new Brushes.Rectangle(options);
+    }
+
+    createLinearGradient(options = {}) {
+        options.context = this.context;
+        return new Brushes.LinearGradient(options);
+    }
+
+    createRadialGradient(options = {}) {
+        options.context = this.context;
+        return new Brushes.LinearGradient(options);
     }
 }
