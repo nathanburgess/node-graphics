@@ -1,0 +1,36 @@
+{
+    "name": "easel",
+    "version": "0.0.1",
+    "description": "A graphics library built around node-canvas to make creation and editing of procedural images easier.",
+    "main": "dist/Easel.js",
+    "scripts": {
+        "build": "babel **/*.mjs --out-dir dist",
+        "watch": "nodemon --experimental-modules index.mjs"
+    },
+    "keywords": [
+        "easel",
+        "canvas",
+        "node-canvas",
+        "image",
+        "images",
+        "image",
+        "processing",
+        "compositing",
+        "graphics",
+        "graphic"
+    ],
+    "author": "Nathan Burgess",
+    "license": "MIT",
+    "engines": {
+        "node": ">=9.2.0"
+    },
+    "dependencies": {
+        "canvas": "^2.0.0-alpha.9",
+        "uuid": "^3.1.0"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
+        "babel-preset-es2017": "^6.24.1"
+    }
+}
