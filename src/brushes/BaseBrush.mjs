@@ -3,6 +3,10 @@
  */
 export default class BaseBrush {
     constructor(options = {}) {
+        this.color       = "white";
+        this.borderColor = "transparent";
+        this.borderSize  = 0;
+
         let defaults = {};
         Object.assign(this, defaults, options);
     }
@@ -12,6 +16,25 @@ export default class BaseBrush {
         Object.assign(this, defaults, options);
     }
 
-    draw() {
+    fill(color) {
+        this.color = color;
+        return this;
+    }
+
+    border(color, size) {
+        this.borderColor = color;
+        this.borderSize  = size;
+        return this;
+    }
+
+    preRender(context) {
+        context.save();
+        context.fillStyle = this.color;
+        context.strokeStyle = this.borderColor;
+        context.lineWidth = this.borderSize;
+    }
+
+    postRender(context) {
+        context.restore();
     }
 }

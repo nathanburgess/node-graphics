@@ -12,15 +12,13 @@ export default class Rectangle extends Brush {
         this.assignOptions(defaults, options);
     }
 
-    fill(color) {
-        this.fillColor = color;
-        return this;
-    }
-
     render(context) {
-        context.save();
-        context.fillStyle = this.fillColor;
-        context.fillRect(this.x, this.y, this.width, this.height);
-        context.restore();
+        super.preRender(context);
+
+        context.rect(this.x, this.y, this.width, this.height);
+        context.fill();
+        context.stroke();
+
+        super.postRender(context);
     }
 }
