@@ -56,10 +56,10 @@ export default class Layer {
     }
 
     calculateMaxBounds(bounds) {
-        if (!this.bounds.top || bounds.top < this.bounds.top) this.bounds.top = bounds.top;
-        if (!this.bounds.left || bounds.left < this.bounds.left) this.bounds.left = bounds.left;
-        if (!this.bounds.right || bounds.right > this.bounds.right) this.bounds.right = bounds.right;
-        if (!this.bounds.bottom || bounds.bottom > this.bounds.bottom) this.bounds.bottom = bounds.bottom;
+        if (this.bounds.top === undefined || bounds.top < this.bounds.top) this.bounds.top = bounds.top;
+        if (this.bounds.left === undefined || bounds.left < this.bounds.left) this.bounds.left = bounds.left;
+        if (this.bounds.right === undefined || bounds.right > this.bounds.right) this.bounds.right = bounds.right;
+        if (this.bounds.bottom === undefined || bounds.bottom > this.bounds.bottom) this.bounds.bottom = bounds.bottom;
     }
 
     async render() {
@@ -68,7 +68,6 @@ export default class Layer {
             brush = await brush;
             await brush.render();
             this.calculateMaxBounds(brush.bounds);
-            console.log(this.bounds);
         });
         this.drawState = "done";
         await this.save();

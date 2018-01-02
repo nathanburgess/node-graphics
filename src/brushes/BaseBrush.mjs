@@ -20,12 +20,7 @@ export default class BaseBrush {
         }, defaults);
 
         // Calculate the initial bounding box of this brush
-        this.bounds = {
-            top    : options.context.canvas.width,
-            right  : 0,
-            bottom : 0,
-            left   : options.context.canvas.height
-        };
+        this.bounds = {top : undefined, right : undefined, bottom : undefined, left : undefined};
 
         this.center = {
             x : options.context.canvas.width * 0.5,
@@ -56,8 +51,10 @@ export default class BaseBrush {
         // Merge the options with this, save original options in this.options
         this.options = Object.assign(defaults, options);
         Object.assign(this, this.options);
+        // Any cyclical references must be removed in order for deep copies to work later on
         delete this.options.context;
 
+        // If no height was set, we assume that this brush is square
         if (!this.height) this.height = this.width;
 
         // Calculate the Brush's position if X and/or Y are words
@@ -65,6 +62,11 @@ export default class BaseBrush {
 
         // Calculate the bounding box
         this.calculateMaxBounds();
+
+        // On construction, if a Gradient is passed in as the color, it's assigned before the width
+        // and height are calculated. By reassigning here, the width and height are available and
+        // the gradient can be sized to fit this brush.
+        if (typeof this.color === "object") this.color = this.color;
 
         // Determine the center point of the Brush
         let cx = this.x + this.bounds.width * 0.5;
@@ -81,6 +83,10 @@ export default class BaseBrush {
     set color(value) {
         if (value.constructor.name.indexOf("Gradient") !== -1) {
             value        = value.clone();
+            value.width  = this.width;
+            value.height = this.height;
+            value.resize();
+            console.log(value);
             value.parent = this;
         }
         this.fillStyle = value;
@@ -99,17 +105,28 @@ export default class BaseBrush {
         return this.fillStyle;
     }
 
-    copyTo(x, y, config = {}) {
+    async copyTo(x, y, config = {}) {
         // Perform a deep-clone of the original brush's options
-        let options = JSON.parse(JSON.stringify(this.options));
+        let color = undefined;
+        if (typeof this.options.color === "object") {
+            color = this.options.color;
+            delete this.options.color;
+        }
+        let options        = JSON.parse(JSON.stringify(this.options));
+        this.options.color = color;
+
         Object.assign(options, config);
         options.context = this.context;
         options.x       = x;
         options.y       = y;
         options.height  = this.height || this.width;
         let brush       = new this.constructor(options);
+        if (color) brush.color = color;
 
-        if (brush.constructor.name === "Image") brush.image = this.image;
+        if (brush.constructor.name === "Image") {
+            brush.image = this.image;
+            await brush.loadImage();
+        }
         return brush;
     }
 
@@ -147,34 +164,36 @@ export default class BaseBrush {
     calculateMaxBounds() {
         let offset = 0;
         if (this.lineWidth) offset = this.lineWidth * 0.5;
-        this.bounds = {
+
+        let bounds = {
             top    : this.y - offset,
             right  : this.x + this.width + offset,
             bottom : this.y + this.height + offset,
             left   : this.x - offset,
         };
 
-        if (this.bounds.top < 0 || isNaN(this.bounds.top)) this.bounds.top = 0;
+        // Ignore any brushes that are off canvas
+        if (bounds.right < 0) return;
+        if (bounds.left > this.context.canvas.width) return;
+        if (bounds.bottom < 0) return;
+        if (bounds.top > this.context.canvas.width) return;
 
-        if (this.bounds.right > this.context.canvas.width) this.bounds.right = this.context.canvas.width;
-        else if (this.bounds.right < 0 || isNaN(this.bounds.right)) this.bounds.right = 0;
+        // Make sure the bounds are set to sensible values
+        if (isNaN(bounds.top)) bounds.top = 0;
+        if (bounds.right > this.context.canvas.width) bounds.right = this.context.canvas.width;
+        else if (isNaN(bounds.right)) bounds.right = 0;
+        if (bounds.bottom > this.context.canvas.height) bounds.bottom = this.context.canvas.height;
+        else if (isNaN(bounds.bottom)) bounds.bottom = 0;
+        if (isNaN(bounds.left)) bounds.left = 0;
 
-        if (this.bounds.bottom > this.context.canvas.height) this.bounds.bottom = this.context.canvas.height;
-        else if (this.bounds.bottom < 0 || isNaN(this.bounds.bottom)) this.bounds.bottom = 0;
+        // Update the width and height
+        bounds.width  = bounds.right - bounds.left;
+        bounds.height = bounds.bottom - bounds.top;
+        if (!bounds.width) bounds.width = this.width;
+        if (!bounds.height) bounds.height = bounds.width;
 
-        if (this.bounds.left < 0 || isNaN(this.bounds.left)) this.bounds.left = 0;
-
-        this.bounds.width  = this.bounds.right - this.bounds.left;
-        this.bounds.height = this.bounds.bottom - this.bounds.top;
-        if (!this.bounds.width) this.bounds.width = this.width;
-        if (!this.bounds.height) this.bounds.height = this.bounds.width;
-    }
-
-    updateBounds(bounds) {
-        if (bounds.top < this.bounds.top) this.bounds.top = bounds.top;
-        if (bounds.left < this.bounds.left) this.bounds.left = bounds.left;
-        if (bounds.right > this.bounds.right) this.bounds.right = bounds.right;
-        if (bounds.bottom > this.bounds.bottom) this.bounds.bottom = bounds.bottom;
+        // Apply the bounds
+        this.bounds = bounds;
     }
 
     fill(color) {
@@ -202,14 +221,14 @@ export default class BaseBrush {
             this.context.translate(-this.center.x, -this.center.y);
         });
 
-        // Establish the drawing space
-        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
-
         // Set the fill style
         this.context.fillStyle = this.color;
         if (this.color.constructor.name.indexOf("Gradient") !== -1)
             this.context.fillStyle = this.color.render();
-        if (this.fillStyle) this.context.fill();
+
+        // Establish the drawing space
+        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
+        this.context.fill();
     }
 
     async render() {
@@ -222,12 +241,9 @@ export default class BaseBrush {
         this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
 
         // Set the line/border styles
-        if (this.lineWidth && this.borderColor !== "transparent") {
-            this.context.strokeStyle = this.borderColor;
-            this.context.lineWidth   = this.lineWidth;
-            this.context.stroke();
-        }
-
+        this.context.strokeStyle = this.borderColor;
+        this.context.lineWidth   = this.lineWidth;
+        this.context.stroke();
         this.context.restore();
     }
 }
