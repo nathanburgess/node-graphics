@@ -15,7 +15,7 @@ export default class Layer {
         this.drawState = undefined;
         this.brushes   = [];
         this.jobs      = [];
-        this.bounds    = {};
+        this.bounds    = {top : undefined, right : undefined, bottom : undefined, left : undefined};
         this.filename  = `${os.tmpdir()}/${uuid()}.png`;
     }
 
@@ -56,10 +56,10 @@ export default class Layer {
     }
 
     calculateMaxBounds(bounds) {
-        if (bounds.top < this.bounds.top) this.bounds.top = bounds.top;
-        if (bounds.left < this.bounds.left) this.bounds.left = bounds.left;
-        if (bounds.right > this.bounds.right) this.bounds.right = bounds.right;
-        if (bounds.bottom > this.bounds.bottom) this.bounds.bottom = bounds.bottom;
+        if (!this.bounds.top || bounds.top < this.bounds.top) this.bounds.top = bounds.top;
+        if (!this.bounds.left || bounds.left < this.bounds.left) this.bounds.left = bounds.left;
+        if (!this.bounds.right || bounds.right > this.bounds.right) this.bounds.right = bounds.right;
+        if (!this.bounds.bottom || bounds.bottom > this.bounds.bottom) this.bounds.bottom = bounds.bottom;
     }
 
     async render() {
