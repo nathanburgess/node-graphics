@@ -6,14 +6,12 @@ import LinearGradient from "./LinearGradient.mjs";
  */
 export default class Gradient extends Brush {
     constructor(options = {}) {
-        super();
-
-        let defaults = {
-            angle : 0
-        };
-
-        this.assignOptions(defaults, options);
-        this.stops    = [];
+        super(options, {
+            angle : 0,
+            x     : 0,
+            y     : 0,
+            stops : []
+        });
         this.gradient = undefined;
         this.convertAngle();
     }
@@ -58,29 +56,7 @@ export default class Gradient extends Brush {
             angle = 330;
 
         this.angle = angle * -(Math.PI / 180);
-    }
-
-    /**
-     * Get the point on the rect that corresponds to a terminus of the gradient
-     *
-     * @param {number} width - The width of the gradient
-     * @param {number} height - The height of the gradient
-     * @param {boolean} [inverse] - Setting to true will get the opposite points
-     * @returns {[number, number]}
-     */
-    getPointOnRect(width, height, inverse = false) {
-        let angle = -this.angle, magnitude;
-        let cosA  = Math.abs(Math.cos(this.angle));
-        let sinA  = Math.abs(Math.sin(this.angle));
-        let w2ca  = width / 2 / cosA;
-        let h2sa  = height / 2 / sinA;
-
-        if (w2ca <= h2sa) magnitude = Math.abs(w2ca);
-        else magnitude = Math.abs(h2sa);
-
-        return [
-            this.center.x + Math.cos(inverse ? angle - Math.PI : angle) * magnitude,
-            this.center.y + Math.sin(inverse ? angle - Math.PI : angle) * magnitude];
+        return this;
     }
 
     /**
@@ -97,18 +73,63 @@ export default class Gradient extends Brush {
     setAngle(value) {
         this.angle = value;
         this.convertAngle();
+        this.next = true;
         this.resize();
         return this;
     }
 
-    render(context) {
+    resize(width = this.width, height = this.height) {
+        this.width    = width;
+        this.height   = height;
+        this.center.x = this.width * 0.5;
+        this.center.y = this.height * 0.5;
+
+        if (this.parent) {
+            this.x      = this.parent.x;
+            this.y      = this.parent.y;
+            this.width  = this.parent.width;
+            this.height = this.parent.height;
+            this.center = this.parent.center;
+        }
+
+        let x, y, ix, iy;
+        [x, y]   = this.getPointOnRect();
+        [ix, iy] = this.getPointOnRect(true);
+
+        if (this.constructor.name === "LinearGradient")
+            this.gradient = this.context.createLinearGradient(x, y, ix, iy);
+        return this;
+    }
+
+    /**
+     * Get the point on the rect that corresponds to a terminus of the gradient
+     *
+     * @param {boolean} [inverse] - Setting to true will get the opposite points
+     * @returns {[number, number]}
+     */
+    getPointOnRect(inverse = false) {
+        let angle = -this.angle, magnitude;
+        let cosA  = Math.abs(Math.cos(this.angle));
+        let sinA  = Math.abs(Math.sin(this.angle));
+        let w2ca  = this.width / 2 / cosA;
+        let h2sa  = this.height / 2 / sinA;
+
+        if (w2ca <= h2sa) magnitude = Math.abs(w2ca);
+        else magnitude = Math.abs(h2sa);
+
+        return [
+            this.center.x + Math.cos(inverse ? angle - Math.PI : angle) * magnitude,
+            this.center.y + Math.sin(inverse ? angle - Math.PI : angle) * magnitude];
+    }
+
+    paint() {
         this.stops.forEach(stop => {
             this.gradient.addColorStop(stop[0], stop[1]);
         });
-        if (!this.parent) {
-            this.context.fillStyle = this.gradient;
-            this.context.fillRect(0, 0, this.width, this.height);
-        }
+
+        this.context.fillStyle = this.gradient;
+        if (!this.parent)
+            this.context.fillRect(this.x, this.y, this.width, this.height);
         return this.gradient;
     }
 
@@ -116,9 +137,6 @@ export default class Gradient extends Brush {
         let gradient = {};
         let options  = {
             angle   : this.angle,
-            x       : this.x,
-            y       : this.y,
-            center  : this.center,
             stops   : this.stops,
             context : this.context
         };

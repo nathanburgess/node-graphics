@@ -14,22 +14,21 @@ export default class Easel extends EventEmitter {
         let defaults = {
             width            : 2048,
             height           : 2048,
-            antialias        : false,
             smoothing        : false,
-            smoothingQuality : "High",
+            smoothingQuality : "high",
             lineWidth        : 2,
             strokeColor      : "black",
-            fillColor        : "white"
+            fillColor        : "white",
+            trim             : true
         };
 
         this.options = Object.assign(this, defaults, options);
 
         this.center     = {x : this.width * 0.5, y : this.height * 0.5};
-        this.maxBounds  = {left : 0, top : 0, right : this.width, bottom : this.height};
+        this.bounds     = {top : this.height, right : 0, bottom : 0, left : this.width};
         this.layers     = new Map();
         this.operations = [];
         this.brushes    = [];
-        this.bounds     = [];
 
         this.addLayer("base");
         this.activeLayer = this.layers.get("base");
@@ -45,6 +44,7 @@ export default class Easel extends EventEmitter {
      * @param {string} [options.style] - An optional font style
      */
     static registerFont(filename, options) {
+        options.family = options.family.toLowerCase();
         Canvas.registerFont(filename, options);
     }
 
@@ -57,11 +57,10 @@ export default class Easel extends EventEmitter {
         return this.layers.get(name);
     }
 
-    addLayer(name) {
+    addLayer(name = undefined) {
         if (!name) name = "layer-" + this.layers.size;
         let canvas                    = Canvas.createCanvas(this.width, this.height);
         let context                   = canvas.getContext("2d");
-        context.antialias             = this.antialias;
         context.imageSmoothingEnabled = this.smoothing;
         context.imageSmoothingQuality = this.smoothingQuality;
         context.textBaseline          = this.textBaseline;
@@ -72,7 +71,15 @@ export default class Easel extends EventEmitter {
         context.textBaseline          = "top";
         context.textAlign             = "left";
         this.layers.set(name, new Layer(name, canvas, context));
+        this.topLayer = this.layers.get(name);
         return this;
+    }
+
+    calculateMaxBounds(bounds) {
+        if (bounds.top < this.bounds.top) this.bounds.top = Math.ceil(bounds.top);
+        if (bounds.left < this.bounds.left) this.bounds.left = Math.ceil(bounds.left);
+        if (bounds.right > this.bounds.right) this.bounds.right = Math.ceil(bounds.right);
+        if (bounds.bottom > this.bounds.bottom) this.bounds.bottom = Math.ceil(bounds.bottom);
     }
 
     async render() {
@@ -81,23 +88,23 @@ export default class Easel extends EventEmitter {
             layers.push(layer.render());
         });
 
-        await Promise.all(layers);
+        let results = await Promise.all(layers);
+        results.forEach(result => {
+            this.calculateMaxBounds(result.bounds);
+        });
 
         let cleanup = [];
         this.layers.forEach(layer => {
-            cleanup.push(fs.unlink(layer.filename, () => {
-            }));
+            cleanup.push(fs.unlink(layer.filename, global.noop));
         });
         await Promise.all(cleanup);
         return this;
     }
 
-    save(filename) {
+    async save(filename) {
+        await Promise.all(this.operations);
         if (!filename) filename = "undefined.png";
         let base = this.layers.get("base");
-        this.layers.forEach(layer => {
-            base.context.drawImage(layer.canvas, 0, 0);
-        });
 
         return new Promise(resolve => {
             let stream = base.canvas.pngStream().pipe(fs.createWriteStream(filename));
@@ -107,19 +114,54 @@ export default class Easel extends EventEmitter {
         });
     }
 
-    add(brush) {
-        return this.activeLayer.add(brush);
+    /**
+     * Returns an image that has been re-sized to fit only the area in which something was drawn
+     *
+     * @param {number} [percent] - Optionally, a value between 0 and 1 to scale the image down by
+     * @returns {Promise<Layer>}
+     */
+    reduce(percent = 1) {
+        if (percent > 1) percent = 1;
+        if (percent < 0) percent = 0;
+
+        let bounds    = this.bounds;
+        let oldWidth  = bounds.right - bounds.left;
+        let oldHeight = bounds.bottom - bounds.top;
+
+        let reduction    = new Easel({
+            width  : oldWidth * percent,
+            height : oldHeight * percent
+        });
+        reduction.bounds = bounds;
+
+        let base    = this.layers.get("base");
+        let context = reduction.activeLayer.context;
+        context.drawImage(base.canvas,
+            0, 0, oldWidth, oldHeight,
+            bounds.left, bounds.top, context.canvas.width, context.canvas.height);
+        console.log(context.canvas);
+        return reduction;
+    }
+
+    add(...brushes) {
+        brushes.forEach(brush => this.activeLayer.add(brush));
+        return this;
     }
 
     createRect(options) {
         return this.activeLayer.createRect(options);
     }
 
-    createGradient(type, options) {
-        if (type.toLowerCase() === "linear")
-            return this.activeLayer.createLinearGradient(options);
-        else
-            return this.activeLayer.createRadialGradient(options);
+    createGradient(options) {
+        return this.activeLayer.createGradient(options);
+    }
+
+    createImage(options) {
+        return this.activeLayer.createImage(options);
+    }
+
+    createPrinter(options) {
+        return this.activeLayer.createPrinter(options);
     }
 }
 

@@ -14,73 +14,14 @@ export default class Layer {
         this.context   = context;
         this.drawState = undefined;
         this.brushes   = [];
+        this.jobs      = [];
+        this.bounds    = {};
         this.filename  = `${os.tmpdir()}/${uuid()}.png`;
     }
 
     add(brush) {
         this.brushes.push(brush);
         return this;
-    }
-
-    /**
-     * Returns an image that has been re-sized to fit only the area in which something was drawn
-     *
-     * @param {number} [percent] - Optionally, a value between 0 and 1 to scale the image down by
-     * @returns {Promise<Layer>}
-     */
-    async reduce(percent = 1) {
-        if (percent > 1) percent = 1;
-        if (percent < 0) percent = 0;
-
-        if (!this.maxBounds) this.maxBounds = {
-            left   : 0,
-            top    : 0,
-            right  : this.canvas.width,
-            bottom : this.canvas.height
-        };
-        let bounds    = this.maxBounds;
-        let oldWidth  = bounds.right - bounds.left;
-        let oldHeight = bounds.bottom - bounds.top;
-
-        let reduction = new Layer({
-            width  : oldWidth * percent,
-            height : oldHeight * percent
-        });
-
-        reduction.context.drawImage(this.canvas,
-            bounds.left, bounds.top, oldWidth, oldHeight,
-            0, 0, reduction.canvas.width, reduction.canvas.height);
-        return reduction;
-    }
-
-    /**
-     * Keep track of the image's current bounds, for easy resizing later on
-     *
-     * @param {Object} bounds - The bounding box to use for the update
-     * @param {number} bounds.top - The top of the box
-     * @param {number} bounds.right - The right of the box
-     * @param {number} bounds.bottom - The bottom of the box
-     * @param {number} bounds.left - The left of the box
-     * @param {number} [bounds.width] - This is calculated based on the left and right bounds
-     * @param {number} [bounds.height] - This is calculated based on the top and bottom bounds
-     */
-    updateBounds(bounds) {
-        if (bounds.top < 0) bounds.top = 0;
-        if (bounds.left < 0) bounds.left = 0;
-        if (bounds.right > this.canvas.width) bounds.right = this.canvas.width;
-        if (bounds.bottom > this.canvas.height) bounds.bottom = this.canvas.height;
-
-        if (!this.maxBounds) return this.maxBounds = bounds;
-
-        if (bounds.right > this.maxBounds.right) this.maxBounds.right = bounds.right;
-        if (bounds.bottom > this.maxBounds.bottom) this.maxBounds.bottom = bounds.bottom;
-        if (bounds.top < this.maxBounds.top) this.maxBounds.top = bounds.top;
-        if (bounds.left < this.maxBounds.left) this.maxBounds.left = bounds.left;
-
-        bounds.width  = bounds.right - bounds.left;
-        bounds.height = bounds.bottom - bounds.top;
-
-        this.bounds.unshift(bounds);
     }
 
     /**
@@ -114,12 +55,24 @@ export default class Layer {
         return this;
     }
 
+    calculateMaxBounds(bounds) {
+        if (bounds.top < this.bounds.top) this.bounds.top = bounds.top;
+        if (bounds.left < this.bounds.left) this.bounds.left = bounds.left;
+        if (bounds.right > this.bounds.right) this.bounds.right = bounds.right;
+        if (bounds.bottom > this.bounds.bottom) this.bounds.bottom = bounds.bottom;
+    }
+
     async render() {
-        this.drawState = "done";
-        this.brushes.forEach(brush => {
-            brush.render();
+        await Promise.all(this.jobs);
+        this.brushes.forEach(async brush => {
+            brush = await brush;
+            await brush.render();
+            this.calculateMaxBounds(brush.bounds);
+            console.log(this.bounds);
         });
+        this.drawState = "done";
         await this.save();
+        return {name : this.name, bounds : this.bounds};
     }
 
     /**
@@ -149,13 +102,25 @@ export default class Layer {
         return new Brushes.Rectangle(options);
     }
 
-    createLinearGradient(options = {}) {
+    createGradient(options = {}) {
         options.context = this.context;
-        return new Brushes.LinearGradient(options);
+        if (!options.type)
+            return new Brushes.LinearGradient(options);
+        else if (options.type.toLowerCase() === "radial")
+            return new Brushes.RadialGradient(options);
+        else
+            throw new Error("Invalid gradient type supplied.");
     }
 
-    createRadialGradient(options = {}) {
+    async createImage(options = {}) {
         options.context = this.context;
-        return new Brushes.LinearGradient(options);
+        let image       = new Brushes.Image(options);
+        this.jobs.push(image.loadImage());
+        return image;
+    }
+
+    createPrinter(options = {}) {
+        options.context = this.context;
+        return new Brushes.Printer(options);
     }
 }

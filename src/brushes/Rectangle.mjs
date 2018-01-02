@@ -2,35 +2,16 @@ import Brush from "./BaseBrush.mjs";
 import LinearGradient from "./LinearGradient.mjs";
 
 /**
- * The base class for all images
+ * The Rectangle Brush
  */
 export default class Rectangle extends Brush {
     constructor(options = {}) {
-        super();
-
-        let defaults = {
-            borderRadius : 0
-        };
-
-        this.assignOptions(defaults, options);
+        super(options, {});
     }
 
-
-    rint(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    render() {
-        super.preRender(this.context);
-
+    paint() {
         this.context.beginPath();
         this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
         this.context.closePath();
-        this.context.fill();
-        this.context.stroke();
-
-        super.postRender(this.context);
     }
 }
