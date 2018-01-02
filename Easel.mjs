@@ -88,7 +88,6 @@ export default class Easel extends EventEmitter {
         let layers = [];
 
         this.layers.map(layer => {
-            console.log("Rendering layer " + layer.name);
             layers.push(layer.render());
         });
 

@@ -53,7 +53,6 @@ export default class Image extends Brush {
         let x = options.x || this.x;
         let y = options.y || this.y;
 
-        //console.log("Image.paint options:", options);
         if (!this.image) throw new Error("No image was provided for Image.paint()");
 
         if (this.width)

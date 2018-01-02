@@ -86,7 +86,6 @@ export default class BaseBrush {
             value.width  = this.width;
             value.height = this.height;
             value.resize();
-            console.log(value);
             value.parent = this;
         }
         this.fillStyle = value;
