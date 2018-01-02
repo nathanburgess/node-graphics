@@ -19,10 +19,10 @@ export default class Rectangle extends Brush {
             super.preRender(context);
 
             context.beginPath();
-            context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
+            context.roundRect(this.x, this.y, this.width, this.height, this.borderSpecs);
             context.closePath();
-            context.fill();
             context.stroke();
+            context.fill();
 
             super.postRender(context);
     }
