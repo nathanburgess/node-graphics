@@ -1,4 +1,5 @@
 import Brush from "./BaseBrush.mjs";
+import Text from "./Text.mjs";
 
 /**
  * The Rectangle Brush
@@ -6,11 +7,22 @@ import Brush from "./BaseBrush.mjs";
 export default class Printer extends Brush {
     constructor(options = {}) {
         super(options, {});
+        this.texts = [];
+        this.font = `${this.size}px ${this.family}`;
     }
 
-    render() {
-        super.preRender(this.context);
+    text(string, options = {}) {
+        options.string  = string;
+        options.context = this.context;
+        options.font = this.font;
+        this.texts.unshift(new Text(options));
+        return this.texts[0];
+    }
 
-        super.postRender(this.context);
+    paint() {
+        this.texts.reverse();
+        this.texts.forEach(text => {
+            text.paint();
+        });
     }
 }
