@@ -25,13 +25,13 @@ export default class Easel extends EventEmitter {
         this.options = Object.assign(this, defaults, options);
 
         this.center     = {x : this.width * 0.5, y : this.height * 0.5};
-        this.bounds     = {top : this.height, right : 0, bottom : 0, left : this.width};
-        this.layers     = new Map();
+        this.bounds     = {top : undefined, right : undefined, bottom : undefined, left : undefined};
+        this.layers     = [];
         this.operations = [];
         this.brushes    = [];
 
         this.addLayer("base");
-        this.activeLayer = this.layers.get("base");
+        this.activeLayer = this.layer("base");
     }
 
     /**
@@ -54,7 +54,9 @@ export default class Easel extends EventEmitter {
     }
 
     layer(name) {
-        return this.layers.get(name);
+        return this.layers.find(l => {
+            return l.name === name;
+        });
     }
 
     addLayer(name = undefined) {
@@ -70,21 +72,22 @@ export default class Easel extends EventEmitter {
         context.fillStyle             = this.fillColor;
         context.textBaseline          = "top";
         context.textAlign             = "left";
-        this.layers.set(name, new Layer(name, canvas, context));
-        this.topLayer = this.layers.get(name);
+        this.layers.push(new Layer(name, canvas, context));
+        this.topLayer = this.layer(name);
         return this;
     }
 
     calculateMaxBounds(bounds) {
-        if (bounds.top < this.bounds.top) this.bounds.top = Math.ceil(bounds.top);
-        if (bounds.left < this.bounds.left) this.bounds.left = Math.ceil(bounds.left);
-        if (bounds.right > this.bounds.right) this.bounds.right = Math.ceil(bounds.right);
-        if (bounds.bottom > this.bounds.bottom) this.bounds.bottom = Math.ceil(bounds.bottom);
+        if (this.bounds.top === undefined || bounds.top < this.bounds.top) this.bounds.top = Math.ceil(bounds.top);
+        if (this.bounds.left === undefined || bounds.left < this.bounds.left) this.bounds.left = Math.ceil(bounds.left);
+        if (this.bounds.right === undefined || bounds.right > this.bounds.right) this.bounds.right = Math.ceil(bounds.right);
+        if (this.bounds.bottom === undefined || bounds.bottom > this.bounds.bottom) this.bounds.bottom = Math.ceil(bounds.bottom);
     }
 
     async render() {
         let layers = [];
-        this.layers.forEach(layer => {
+
+        this.layers.map(layer => {
             layers.push(layer.render());
         });
 
@@ -104,7 +107,7 @@ export default class Easel extends EventEmitter {
     async save(filename) {
         await Promise.all(this.operations);
         if (!filename) filename = "undefined.png";
-        let base = this.layers.get("base");
+        let base = this.layer("base");
 
         return new Promise(resolve => {
             let stream = base.canvas.pngStream().pipe(fs.createWriteStream(filename));
@@ -124,23 +127,28 @@ export default class Easel extends EventEmitter {
         if (percent > 1) percent = 1;
         if (percent < 0) percent = 0;
 
-        let bounds    = this.bounds;
-        let oldWidth  = bounds.right - bounds.left;
-        let oldHeight = bounds.bottom - bounds.top;
+        let bounds = this.bounds;
+        let width  = bounds.right - bounds.left;
+        let height = bounds.bottom - bounds.top;
 
         let reduction    = new Easel({
-            width  : oldWidth * percent,
-            height : oldHeight * percent
+            width  : width * percent,
+            height : height * percent
         });
         reduction.bounds = bounds;
 
-        let base    = this.layers.get("base");
+        let base    = this.layer("base");
         let context = reduction.activeLayer.context;
         context.drawImage(base.canvas,
-            0, 0, oldWidth, oldHeight,
-            bounds.left, bounds.top, context.canvas.width, context.canvas.height);
-        console.log(context.canvas);
+            bounds.left, bounds.top, width, height,
+            0, 0, reduction.width, reduction.height);
         return reduction;
+    }
+
+    addTo(layer, ...brushes) {
+        layer = this.layer(layer);
+        brushes.forEach(brush => layer.add(brush));
+        return this;
     }
 
     add(...brushes) {
