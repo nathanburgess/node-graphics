@@ -13,6 +13,8 @@ export default class BaseBrush {
 
         // Add some global brush defaults that may or may not be set in individual brushes
         defaults = Object.assign({
+            x            : 0,
+            y            : 0,
             color        : "white",
             borderColor  : "transparent",
             borderSize   : 0,
@@ -56,6 +58,7 @@ export default class BaseBrush {
 
         // If no height was set, we assume that this brush is square
         if (!this.height) this.height = this.width;
+        if (!this.width) this.width = this.height;
 
         // Calculate the Brush's position if X and/or Y are words
         [this.x, this.y] = this.getPositionFromWord(this.x, this.y);
@@ -138,9 +141,22 @@ export default class BaseBrush {
      */
     getPositionFromWord(x, y) {
         let xPos   = x, yPos = y;
-        let offset = 0;
+        let offset = 0, xPlus = 0, yPlus = 0;
         let width  = this.width;
         let height = this.height;
+
+        if (typeof x === "string") {
+            x     = x.toLowerCase();
+            let t = x.split(/([+-])/);
+            x     = t[0];
+            if (t.length === 3) xPlus = Number.parseInt(t[1]+t[2]);
+        }
+        if (typeof y === "string") {
+            y     = y.toLowerCase();
+            let t = y.split(/([+-])/);
+            y     = t[0];
+            if (t.length === 3) yPlus = Number.parseInt(t[1]+t[2]);
+        }
 
         if (this.constructor.name === "Image" && width && !height) height = width;
 
@@ -157,7 +173,7 @@ export default class BaseBrush {
         if (y === "top") yPos = offset;
         if (x === "left") xPos = offset;
 
-        return [xPos, yPos];
+        return [xPos + xPlus, yPos + yPlus];
     }
 
     calculateMaxBounds() {
@@ -223,7 +239,7 @@ export default class BaseBrush {
         // Set the fill style
         this.context.fillStyle = this.color;
         if (this.color.constructor.name.indexOf("Gradient") !== -1)
-            this.context.fillStyle = this.color.render();
+            this.context.fillStyle = this.color.generate();
 
         // Establish the drawing space
         this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
