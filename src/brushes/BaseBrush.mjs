@@ -24,6 +24,17 @@ export default class BaseBrush {
         // Calculate the initial bounding box of this brush
         this.bounds = {top : undefined, right : undefined, bottom : undefined, left : undefined};
 
+        this.borderSpecs = {
+            tLeft : 0,
+            tRight : 0,
+            bRight : 0,
+            bLeft : 0,
+            tLeftE : 0,
+            tRightE : 0,
+            bRightE : 0,
+            bLeftE : 0, 
+        };
+
         this.center = {
             x : options.context.canvas.width * 0.5,
             y : options.context.canvas.height * 0.5
@@ -216,11 +227,80 @@ export default class BaseBrush {
         return this;
     }
 
-    border(color, size) {
+    border(color, size, radius) {
         this.borderColor = color;
         this.borderSize  = size;
+        this.radParse(radius);
         return this;
     }
+
+    radParse(x) {
+        var arr = x.split(" ");
+
+        if(arr.indexOf('/') !== -1 ) {
+            var arrE = arr.slice(arr.indexOf('/')+1, arr.length);
+            arrE = arrE.map(x => Number.parseInt(x));
+            let tre;
+            let bre;
+            let ble;
+
+            if(arrE.length === 1) {
+                tre = bre = ble = arrE[0];
+            }
+            else if(arrE.length === 2){
+                bre = arrE[0];
+                tre = ble = arrE[1];
+            }
+            else if(arrE.length === 3){
+                tre = ble = arrE[1];
+                bre = arrE[2];
+            }
+            else if(arrE.length ===4) {
+                tre = arrE[1];
+                bre = arrE[2];
+                ble = arrE[3];
+            }
+
+            this.borderSpecs.tLeftE = arrE[0];
+            this.borderSpecs.tRightE = tre;
+            this.borderSpecs.bRightE = bre;
+            this.borderSpecs.bLeftE = ble;
+        }
+        
+        //arr = arr.map(x => Number.parseInt(x));
+        let tr;
+        let br;
+        let bl;
+        console.log(arr);
+        if(arr.length === 1){
+            
+
+            tr = br = bl = arr[0];
+        }
+        else if(arr.length === 2){
+            br = arr[0];
+            tr = bl = arr[1];
+        }
+        else if(arr.length === 3){
+            tr = bl = arr[1];
+            br = arr[2];
+        }
+        else if(arr.length === 4){
+            tr = arr[1];
+            br = arr[2];
+            bl = arr[3];
+        }
+
+        this.borderSpecs.tLeft = arr[0];
+        this.borderSpecs.tRight = tr;
+        this.borderSpecs.bRight = br;
+        this.borderSpecs.bLeft = bl;
+
+        console.log(arr);
+        console.log(arrE);
+        console.log(this.borderSpecs);
+    }
+
 
     rotate(angle) {
         this.rotations.push(angle * 0.017453292519943295);
@@ -236,6 +316,12 @@ export default class BaseBrush {
             this.context.translate(-this.center.x, -this.center.y);
         });
 
+<<<<<<< HEAD
+        // Establish the drawing space
+        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderSpecs);
+
+=======
+>>>>>>> 90cee6f83e425dea39f00ab0be5e75769e1fae57
         // Set the fill style
         this.context.fillStyle = this.color;
         if (this.color.constructor.name.indexOf("Gradient") !== -1)
@@ -253,7 +339,7 @@ export default class BaseBrush {
     }
 
     postRender() {
-        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
+        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderSpecs);
 
         // Set the line/border styles
         this.context.strokeStyle = this.borderColor;
