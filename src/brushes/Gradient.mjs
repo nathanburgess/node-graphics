@@ -122,7 +122,7 @@ export default class Gradient extends Brush {
             this.center.y + Math.sin(inverse ? angle - Math.PI : angle) * magnitude];
     }
 
-    render() {
+    generate() {
         this.stops.forEach(stop => {
             this.gradient.addColorStop(stop[0], stop[1]);
         });
@@ -130,7 +130,7 @@ export default class Gradient extends Brush {
     }
 
     paint() {
-        this.render();
+        this.generate();
         this.context.fillStyle = this.gradient;
         if (!this.parent)
             this.context.fillRect(this.x, this.y, this.width, this.height);

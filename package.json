@@ -27,6 +27,7 @@
     ],
     "dependencies": {
         "canvas": "^2.0.0-alpha.9",
+        "gif-frames": "^0.4.0",
         "request": "^2.83.0",
         "request-promise-native": "^1.0.5",
         "uuid": "^3.1.0"

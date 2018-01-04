@@ -8,6 +8,13 @@ import * as Brushes from "./Brushes.mjs";
  * The base class for all images
  */
 export default class Layer {
+    /**
+     * Constructor for a layer
+     *
+     * @param {string} name - The name of this layer
+     * @param {Canvas} canvas -
+     * @param {CanvasRenderingContext2D} context
+     */
     constructor(name, canvas, context) {
         this.name      = name;
         this.canvas    = canvas;
@@ -17,8 +24,15 @@ export default class Layer {
         this.jobs      = [];
         this.bounds    = {top : undefined, right : undefined, bottom : undefined, left : undefined};
         this.filename  = `${os.tmpdir()}/${uuid()}.png`;
+        console.log(context.constructor.name);
     }
 
+    /**
+     * Adds a brush to this layer's render stack
+     *
+     * @param {BaseBrush} brush - The brush to add
+     * @returns {Layer}
+     */
     add(brush) {
         this.brushes.push(brush);
         return this;
@@ -55,6 +69,11 @@ export default class Layer {
         return this;
     }
 
+    /**
+     * Calculate the bounding box for this layer
+     *
+     * @param {Object} bounds - The bounding box to use for the update
+     */
     calculateMaxBounds(bounds) {
         if (this.bounds.top === undefined || bounds.top < this.bounds.top) this.bounds.top = bounds.top;
         if (this.bounds.left === undefined || bounds.left < this.bounds.left) this.bounds.left = bounds.left;
@@ -62,6 +81,11 @@ export default class Layer {
         if (this.bounds.bottom === undefined || bounds.bottom > this.bounds.bottom) this.bounds.bottom = bounds.bottom;
     }
 
+    /**
+     * Render this layer and all of it's brushes
+     *
+     * @returns {Promise}
+     */
     async render() {
         await Promise.all(this.jobs);
         this.brushes.forEach(async brush => {
@@ -96,11 +120,23 @@ export default class Layer {
         });
     }
 
+    /**
+     * Create a rectangle brush
+     *
+     * @param {object} options - The settings for the rectangle
+     * @returns {Rectangle}
+     */
     createRect(options = {}) {
         options.context = this.context;
         return new Brushes.Rectangle(options);
     }
 
+    /**
+     * Create a gradient brush
+     *
+     * @param {object} options - The settings for the gradient
+     * @returns {Gradient}
+     */
     createGradient(options = {}) {
         options.context = this.context;
         if (!options.type)
@@ -111,6 +147,12 @@ export default class Layer {
             throw new Error("Invalid gradient type supplied.");
     }
 
+    /**
+     * Create an image brush
+     *
+     * @param {object} options - The settings for the image
+     * @returns {Promise<Image>}
+     */
     async createImage(options = {}) {
         options.context = this.context;
         let image       = new Brushes.Image(options);
@@ -118,6 +160,12 @@ export default class Layer {
         return image;
     }
 
+    /**
+     * Create a printer brush
+     *
+     * @param {object} options - The settings for the printer
+     * @returns {Printer}
+     */
     createPrinter(options = {}) {
         options.context = this.context;
         return new Brushes.Printer(options);

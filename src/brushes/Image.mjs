@@ -21,6 +21,13 @@ export default class Image extends Brush {
     }
 
     async loadImage() {
+        if (!this.source && this.image) {
+            let image  = new Canvas.Image;
+            image.src  = this.image;
+            this.image = image;
+            return;
+        }
+
         this.source = this.source.toLowerCase();
         if (this.source.slice(0, 4) !== "http") {
             let load = Canvas.loadImage(this.source);
@@ -55,8 +62,13 @@ export default class Image extends Brush {
 
         if (!this.image) throw new Error("No image was provided for Image.paint()");
 
-        if (this.width)
+
+        if (this.width) {
+            this.context.beginPath();
+            this.context.arc(this.center.x, this.center.y, this.borderRadius, 0, 2 * Math.PI, false);
+            this.context.clip();
             this.context.drawImage(this.image, x, y, this.width, this.height);
+        }
         else
             this.context.drawImage(this.image, x, y);
     }

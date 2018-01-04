@@ -14,6 +14,7 @@ export default class Easel extends EventEmitter {
         let defaults = {
             width            : 2048,
             height           : 2048,
+            antialias        : "none",
             smoothing        : false,
             smoothingQuality : "high",
             lineWidth        : 2,
@@ -123,7 +124,7 @@ export default class Easel extends EventEmitter {
      * @param {number} [percent] - Optionally, a value between 0 and 1 to scale the image down by
      * @returns {Promise<Layer>}
      */
-    reduce(percent = 1) {
+    minify(percent = 1) {
         if (percent > 1) percent = 1;
         if (percent < 0) percent = 0;
 
