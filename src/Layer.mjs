@@ -68,7 +68,6 @@ export default class Layer {
             brush = await brush;
             await brush.render();
             this.calculateMaxBounds(brush.bounds);
-            console.log(this.bounds);
         });
         this.drawState = "done";
         await this.save();

@@ -11,8 +11,7 @@ export default class Rectangle extends Brush {
 
     paint() {
         this.context.beginPath();
-        console.log(this);
-        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
+        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderSpecs);
         this.context.closePath();
     }
 }

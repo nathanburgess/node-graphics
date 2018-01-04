@@ -26,7 +26,7 @@ export default class BaseBrush {
             bottom : 0,
             left   : options.context.canvas.height
         };
-        
+
         this.borderSpecs = {
             tLeft : 0,
             tRight : 0,
@@ -233,13 +233,14 @@ export default class BaseBrush {
             this.borderSpecs.bLeftE = ble;
         }
         
-        arr = arr.slice(0, arr.indexOf('/'));
-        arr = arr.map(x => Number.parseInt(x));
+        //arr = arr.map(x => Number.parseInt(x));
         let tr;
         let br;
         let bl;
-
+        console.log(arr);
         if(arr.length === 1){
+            
+
             tr = br = bl = arr[0];
         }
         else if(arr.length === 2){
@@ -282,7 +283,7 @@ export default class BaseBrush {
         });
 
         // Establish the drawing space
-        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
+        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderSpecs);
 
         // Set the fill style
         this.context.fillStyle = this.color;
@@ -298,7 +299,7 @@ export default class BaseBrush {
     }
 
     postRender() {
-        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
+        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderSpecs);
 
         // Set the line/border styles
         if (this.lineWidth && this.borderColor !== "transparent") {
