@@ -11,18 +11,23 @@ export default class Text extends Brush {
     calculateSize() {
         this.context.font = this.font;
         let bounds        = this.context.measureText(this.string);
-        this.width        = bounds.width;
-        this.height       = bounds.actualBoundingBoxDescent - bounds.actualBoundingBoxAscent;
+        console.log(bounds);
+        this.width  = bounds.width;
+        this.height = bounds.emHeightAscent + bounds.emHeightDescent;
     }
 
     at(x, y) {
-        this.x = x;
-        this.y = y;
-
+        // Calculate the logical size of this text
         this.calculateSize();
+        let yObj = undefined;
+
+        if (typeof y !== "number" && typeof y !== "string") {
+            yObj = y[1];
+            y    = y[0];
+        }
 
         // Calculate the Brush's position if X and/or Y are words
-        [this.x, this.y] = this.getPositionFromWord(this.x, this.y);
+        [this.x, this.y] = this.getPositionFromWord(x, y, yObj);
 
         // Calculate the bounding box
         this.calculateMaxBounds();

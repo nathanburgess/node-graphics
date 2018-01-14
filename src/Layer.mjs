@@ -24,7 +24,6 @@ export default class Layer {
         this.jobs      = [];
         this.bounds    = {top : undefined, right : undefined, bottom : undefined, left : undefined};
         this.filename  = `${os.tmpdir()}/${uuid()}.png`;
-        console.log(context.constructor.name);
     }
 
     /**

@@ -13,16 +13,24 @@ export default class BaseBrush {
 
         // Add some global brush defaults that may or may not be set in individual brushes
         defaults = Object.assign({
-            x            : 0,
-            y            : 0,
-            color        : "white",
-            borderColor  : "transparent",
-            borderSize   : 0,
-            borderRadius : 0,
+            x     : 0,
+            y     : 0,
+            color : "white"
         }, defaults);
 
         // Calculate the initial bounding box of this brush
         this.bounds = {top : undefined, right : undefined, bottom : undefined, left : undefined};
+
+        this.borderSpec = {
+            color       : "transparent",
+            type        : "outer",
+            size        : 0,
+            radius      : 0,
+            topLeft     : 0,
+            topRight    : 0,
+            bottomRight : 0,
+            bottomLeft  : 0,
+        };
 
         this.center = {
             x : options.context.canvas.width * 0.5,
@@ -36,8 +44,6 @@ export default class BaseBrush {
         // Due to the nature of transformations, certain operations must happen in a certain order. Separating
         // these operations out into their own specific arrays allows an easier way of ensuring proper order.
         this.rotations = [];
-
-        this.copies = [];
 
         // Lastly, run the final step of initialization on the Brush
         this.assignOptions(defaults, options);
@@ -94,10 +100,6 @@ export default class BaseBrush {
         this.fillStyle = value;
     }
 
-    set borderSize(size) {
-        this.lineWidth = size;
-    }
-
     /**
      * fillStyle accessor
      *
@@ -137,38 +139,38 @@ export default class BaseBrush {
      *
      * @param {number|string} x - The Brush's X coordinate
      * @param {number|string} y - The Brush's Y coordinate
+     * @param {object} [parent] - If a parent is specified, the calculation is based on it's bounds rather than the
+     *     entire canvas
      * @returns {*[]}
      */
-    getPositionFromWord(x, y) {
+    getPositionFromWord(x, y, parent=undefined) {
         let xPos   = x, yPos = y;
         let offset = 0, xPlus = 0, yPlus = 0;
         let width  = this.width;
         let height = this.height;
+        if (this.bounds.width) width = this.bounds.width;
+        if (this.bounds.height) height = this.bounds.height;
+        if (this.borderSpec.size) offset = this.borderSpec.size * 0.5;
+        if(!parent) parent = this.context.canvas;
 
         if (typeof x === "string") {
             x     = x.toLowerCase();
             let t = x.split(/([+-])/);
             x     = t[0];
-            if (t.length === 3) xPlus = Number.parseInt(t[1]+t[2]);
+            if (t.length === 3) xPlus = Number.parseInt(t[1] + t[2]);
         }
         if (typeof y === "string") {
             y     = y.toLowerCase();
             let t = y.split(/([+-])/);
             y     = t[0];
-            if (t.length === 3) yPlus = Number.parseInt(t[1]+t[2]);
+            if (t.length === 3) yPlus = Number.parseInt(t[1] + t[2]);
         }
 
-        if (this.constructor.name === "Image" && width && !height) height = width;
+        if (x === "center") xPos = parent.width * 0.5 - width * 0.5;
+        else if (x === "right") xPos = parent.width - width - offset;
 
-        if (this.bounds.width) width = this.bounds.width;
-        if (this.bounds.height) height = this.bounds.height;
-        if (this.lineWidth) offset = this.lineWidth * 0.5;
-
-        if (x === "center") xPos = this.context.canvas.width * 0.5 - width * 0.5;
-        else if (x === "right") xPos = this.context.canvas.width - width - offset;
-
-        if (y === "center") yPos = this.context.canvas.height * 0.5 - height * 0.5;
-        else if (y === "bottom") yPos = this.context.canvas.height - height - offset;
+        if (y === "center") yPos = parent.height * 0.5 - height * 0.5;
+        else if (y === "bottom") yPos = parent.height - height - offset;
 
         if (y === "top") yPos = offset;
         if (x === "left") xPos = offset;
@@ -178,7 +180,7 @@ export default class BaseBrush {
 
     calculateMaxBounds() {
         let offset = 0;
-        if (this.lineWidth) offset = this.lineWidth * 0.5;
+        if (this.borderSpec.size) offset = this.borderSpec.size * 0.5;
 
         let bounds = {
             top    : this.y - offset,
@@ -211,15 +213,43 @@ export default class BaseBrush {
         this.bounds = bounds;
     }
 
-    fill(color) {
-        this.color = color;
+    border(color, size, radius, type = "outer") {
+        if (typeof radius === "number")
+            Object.keys(this.borderSpec).forEach(v => this.borderSpec[v] = radius);
+        else this.calculateRadii(radius);
+        this.borderSpec.color = color;
+        this.borderSpec.size  = size;
+        this.borderSpec.type  = type;
+        this.calculateMaxBounds();
+        if (this.bounds.top < 0) this.y -= this.bounds.top;
+        if (this.bounds.left < 0) this.x -= this.bounds.left;
         return this;
     }
 
-    border(color, size) {
-        this.borderColor = color;
-        this.borderSize  = size;
-        return this;
+    calculateRadii(style) {
+        let radii = style.split(" ").map(x => Number.parseInt(x));
+
+        let tRight, bRight, bLeft;
+        if (radii.length === 1)
+            tRight = bRight = bLeft = radii[0];
+        else if (radii.length === 2) {
+            bRight = radii[0];
+            tRight = bLeft = radii[1];
+        }
+        else if (radii.length === 3) {
+            tRight = bLeft = radii[1];
+            bRight = radii[2];
+        }
+        else if (radii.length === 4) {
+            tRight = radii[1];
+            bRight = radii[2];
+            bLeft  = radii[3];
+        }
+
+        this.borderSpec.topLeft     = radii[0];
+        this.borderSpec.topRight    = tRight;
+        this.borderSpec.bottomRight = bRight;
+        this.borderSpec.bottomLeft  = bLeft;
     }
 
     rotate(angle) {
@@ -242,8 +272,19 @@ export default class BaseBrush {
             this.context.fillStyle = this.color.generate();
 
         // Establish the drawing space
-        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
-        this.context.fill();
+        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderSpec);
+
+        // Set the line/border styles
+        this.context.strokeStyle = this.borderSpec.color;
+        this.context.lineWidth   = this.borderSpec.size;
+        if (this.borderSpec.type === "inner") {
+            this.context.fill();
+            this.context.stroke();
+        }
+        else {
+            this.context.stroke();
+            this.context.fill();
+        }
     }
 
     async render() {
@@ -253,12 +294,7 @@ export default class BaseBrush {
     }
 
     postRender() {
-        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
-
-        // Set the line/border styles
-        this.context.strokeStyle = this.borderColor;
-        this.context.lineWidth   = this.lineWidth;
-        this.context.stroke();
+        this.context.roundRect(this.x, this.y, this.width, this.height, this.borderSpec);
         this.context.restore();
     }
 }

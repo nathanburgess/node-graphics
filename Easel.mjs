@@ -66,8 +66,6 @@ export default class Easel extends EventEmitter {
         let context                   = canvas.getContext("2d");
         context.imageSmoothingEnabled = this.smoothing;
         context.imageSmoothingQuality = this.smoothingQuality;
-        context.textBaseline          = this.textBaseline;
-        context.textAlign             = this.textAlign;
         context.lineWidth             = this.lineWidth;
         context.strokeStyle           = this.strokeColor;
         context.fillStyle             = this.fillColor;
@@ -174,15 +172,24 @@ export default class Easel extends EventEmitter {
     }
 }
 
+function checkRadius(a, r) {
+    if(a < 2 * r) return a / 2;
+    return r;
+}
+
 Canvas.CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-    if (w < 2 * r) r = w / 2;
-    if (h < 2 * r) r = h / 2;
+    r.topLeft = checkRadius(w, r.topLeft);
+    r.topRight = checkRadius(h, r.topRight);
+    r.bottomRight = checkRadius(w, r.bottomRight);
+    r.bottomLeft = checkRadius(h, r.bottomLeft);
+
     this.beginPath();
-    this.moveTo(x + r, y);
-    this.arcTo(x + w, y, x + w, y + h, r);
-    this.arcTo(x + w, y + h, x, y + h, r);
-    this.arcTo(x, y + h, x, y, r);
-    this.arcTo(x, y, x + w, y, r);
+    this.moveTo(x + r.topLeft, y);
+    this.arcTo(x + w, y, x + w, y + h, r.topRight);
+    this.arcTo(x + w, y + h, x, y + h, r.bottomRight);
+    this.arcTo(x, y + h, x, y, r.bottomLeft);
+    this.arcTo(x, y, x + w, y, r.topLeft);
+
     this.closePath();
     return this;
 };
