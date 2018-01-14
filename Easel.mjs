@@ -1,8 +1,8 @@
 import EventEmitter from "events";
 import Canvas from "canvas";
 import fs from "fs";
-import Layer from "./src/Layer.mjs";
-import * as Brushes from "./src/Brushes.mjs";
+import Layer from "./src/Layer";
+import * as Brushes from "./src/Brushes";
 
 global.noop = function () {
 };

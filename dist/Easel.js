@@ -18,11 +18,11 @@ var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _Layer = require("./src/Layer.mjs");
+var _Layer = require("./src/Layer");
 
 var _Layer2 = _interopRequireDefault(_Layer);
 
-var _Brushes = require("./src/Brushes.mjs");
+var _Brushes = require("./src/Brushes");
 
 var Brushes = _interopRequireWildcard(_Brushes);
 

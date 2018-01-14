@@ -135,23 +135,37 @@ export default class BaseBrush {
     }
 
     /**
-     * Calculate the Brush's position on the canvas when the X and Y coordinates provided are not numeric
+     * Calculate the Brush's position on the canvas when the X and Y coordinates provided are not numeric.
+     * The x and y variables may both be an array like [{number} x|y, {string} parent] where parent is the
+     * parent object to use for relative positioning.
      *
-     * @param {number|string} x - The Brush's X coordinate
-     * @param {number|string} y - The Brush's Y coordinate
-     * @param {object} [parent] - If a parent is specified, the calculation is based on it's bounds rather than the
-     *     entire canvas
+     * @param {number|string|object} x - The Brush's X coordinate
+     * @param {number|string|object} y - The Brush's Y coordinate
      * @returns {*[]}
      */
-    getPositionFromWord(x, y, parent=undefined) {
+    getPositionFromWord(x, y) {
         let xPos   = x, yPos = y;
         let offset = 0, xPlus = 0, yPlus = 0;
         let width  = this.width;
         let height = this.height;
+        let xParent, yParent;
+
+        // Check to see if a parent object was passed in with the X position
+        if (typeof x !== "number" && typeof x !== "string") {
+            xParent = x[1];
+            x       = x[0];
+        }
+        // Check to see if a parent object was passed in with the Y position
+        if (typeof y !== "number" && typeof y !== "string") {
+            yParent = y[1];
+            y       = y[0];
+        }
         if (this.bounds.width) width = this.bounds.width;
         if (this.bounds.height) height = this.bounds.height;
         if (this.borderSpec.size) offset = this.borderSpec.size * 0.5;
-        if(!parent) parent = this.context.canvas;
+
+        if (!xParent) xParent = this.context.canvas;
+        if (!yParent) yParent = this.context.canvas;
 
         if (typeof x === "string") {
             x     = x.toLowerCase();
@@ -166,11 +180,12 @@ export default class BaseBrush {
             if (t.length === 3) yPlus = Number.parseInt(t[1] + t[2]);
         }
 
-        if (x === "center") xPos = parent.width * 0.5 - width * 0.5;
-        else if (x === "right") xPos = parent.width - width - offset;
+        if (x === "center") xPos = xParent.width * 0.5 - width * 0.5 - offset;
+        else if (x === "right") xPos = xParent.bounds.right - this.width;
 
-        if (y === "center") yPos = parent.height * 0.5 - height * 0.5;
-        else if (y === "bottom") yPos = parent.height - height - offset;
+        if (y === "center")
+            yPos = (yParent.bounds.top + yParent.bounds.height) * 0.5 - height *0.5 - offset;
+        else if (y === "bottom") yPos = yParent.height - height - offset;
 
         if (y === "top") yPos = offset;
         if (x === "left") xPos = offset;
