@@ -1,6 +1,6 @@
 {
     "name": "easel",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "A graphics library built around node-canvas to make creation and editing of procedural images easier.",
     "author": "Nathan Burgess",
     "license": "MIT",
@@ -10,7 +10,7 @@
         "url": "github:nathanburgess/easel"
     },
     "scripts": {
-        "build": "babel **/*.mjs --out-dir dist",
+        "build": "babel *.mjs **/*.mjs --out-dir dist",
         "watch": "nodemon --experimental-modules index.mjs"
     },
     "keywords": [

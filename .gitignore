@@ -2,7 +2,6 @@
 node_modules
 package-lock.json
 index.mjs
-dist
 images
 fonts
 *.png
