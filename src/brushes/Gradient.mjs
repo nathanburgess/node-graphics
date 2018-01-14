@@ -1,5 +1,5 @@
-import Brush from "./BaseBrush.mjs";
-import LinearGradient from "./LinearGradient.mjs";
+import Brush from "./BaseBrush";
+import LinearGradient from "./LinearGradient";
 
 /**
  * The base class for all images

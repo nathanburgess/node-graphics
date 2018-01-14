@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Gradient2 = require("./Gradient.mjs");
+var _Gradient2 = require("./Gradient");
 
 var _Gradient3 = _interopRequireDefault(_Gradient2);
 

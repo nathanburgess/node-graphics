@@ -1,4 +1,4 @@
-import Brush from "./BaseBrush.mjs";
+import Brush from "./BaseBrush";
 import Canvas from "canvas";
 import uuid from "uuid/v4";
 import request from "request-promise-native";

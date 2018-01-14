@@ -1,9 +1,9 @@
-import Image from "./brushes/Image.mjs";
-import Printer from "./brushes/Printer.mjs";
-import Text from "./brushes/Text.mjs";
-import Rectangle from "./brushes/Rectangle.mjs";
-import LinearGradient from "./brushes/LinearGradient.mjs";
-import RadialGradient from "./brushes/RadialGradient.mjs";
+import Image from "./brushes/Image";
+import Printer from "./brushes/Printer";
+import Text from "./brushes/Text";
+import Rectangle from "./brushes/Rectangle";
+import LinearGradient from "./brushes/LinearGradient";
+import RadialGradient from "./brushes/RadialGradient";
 
 export {
     Image, Printer, Text, Rectangle, LinearGradient, RadialGradient

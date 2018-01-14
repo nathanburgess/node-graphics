@@ -2,7 +2,7 @@ import Canvas from "canvas";
 import fs from "fs";
 import os from "os";
 import uuid from "uuid/v4";
-import * as Brushes from "./Brushes.mjs";
+import * as Brushes from "./Brushes";
 
 /**
  * The base class for all images

@@ -1,5 +1,5 @@
-import Brush from "./BaseBrush.mjs";
-import Text from "./Text.mjs";
+import Brush from "./BaseBrush";
+import Text from "./Text";
 
 /**
  * The Rectangle Brush

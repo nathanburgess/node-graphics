@@ -8,7 +8,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _BaseBrush = require("./BaseBrush.mjs");
+var _BaseBrush = require("./BaseBrush");
 
 var _BaseBrush2 = _interopRequireDefault(_BaseBrush);
 
@@ -39,7 +39,6 @@ var Text = function (_Brush) {
         value: function calculateSize() {
             this.context.font = this.font;
             var bounds = this.context.measureText(this.string);
-            console.log(bounds);
             this.width = bounds.width;
             this.height = bounds.emHeightAscent + bounds.emHeightDescent;
         }
@@ -48,17 +47,11 @@ var Text = function (_Brush) {
         value: function at(x, y) {
             // Calculate the logical size of this text
             this.calculateSize();
-            var yObj = undefined;
-
-            if (typeof y !== "number" && typeof y !== "string") {
-                yObj = y[1];
-                y = y[0];
-            }
 
             // Calculate the Brush's position if X and/or Y are words
 
             // Calculate the bounding box
-            var _getPositionFromWord = this.getPositionFromWord(x, y, yObj);
+            var _getPositionFromWord = this.getPositionFromWord(x, y);
 
             var _getPositionFromWord2 = _slicedToArray(_getPositionFromWord, 2);
 

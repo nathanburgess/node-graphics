@@ -1,4 +1,4 @@
-import Gradient from "./Gradient.mjs";
+import Gradient from "./Gradient";
 
 /**
  * The base class for all images

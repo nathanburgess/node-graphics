@@ -22,7 +22,7 @@ var _v = require("uuid/v4");
 
 var _v2 = _interopRequireDefault(_v);
 
-var _Brushes = require("./Brushes.mjs");
+var _Brushes = require("./Brushes");
 
 var Brushes = _interopRequireWildcard(_Brushes);
 

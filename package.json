@@ -10,8 +10,8 @@
         "url" : "github:nathanburgess/easel"
     },
     "scripts"        : {
-        "build": "echo Please run 'babel **/**.mjs --out-dir dist' on your own",
-        "watch": "nodemon --experimental-modules index.mjs"
+        "build": "echo Please run 'babel **/** --out-dir dist' on your own",
+        "watch": "nodemon --experimental-modules index"
     },
     "keywords"       : [
         "easel",

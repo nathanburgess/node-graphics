@@ -123,36 +123,40 @@ var draw = function () {
                             y: 5,
                             color: "#232323"
                         }).border("black", 5, 3);
-                        avatar = img.createImage({
-                            x: bg.bounds.left + 5,
-                            y: bg.bounds.top + 7.5,
+                        _context2.next = 4;
+                        return img.createImage({
+                            x: ["left+8", bg], //bg.bounds.left + 5,
+                            y: ["bottom", bg],
                             source: "./images/atrox.gif",
                             height: 40,
                             borderRadius: 20
                         });
+
+                    case 4:
+                        avatar = _context2.sent;
                         print = img.createPrinter({
                             family: "Geo",
                             size: 31,
                             color: "white"
                         });
 
-                        print.text("Atrox").at("left+50", ["center", bg]);
-                        print.text("76").at("right-5", ["center", bg]);
+                        print.text("Atrox").at(["left+" + (avatar.bounds.right + 2), bg], ["center", bg]);
+                        print.text("76").at(["right-5", bg], ["center", bg]);
 
                         xpPercent = 75;
-                        xpBarWidth = img.width - 59;
+                        xpBarWidth = bg.width - avatar.bounds.right;
                         xpBarUnit = xpBarWidth * 0.01;
                         xpBarFillWidth = xpPercent * xpBarUnit;
                         xpBar = img.createRect({
                             x: "left+51",
-                            y: "bottom-10",
+                            y: ["bottom-5", bg],
                             width: xpBarWidth,
                             height: 2,
                             color: "#323232"
                         });
                         xpFill = img.createRect({
                             x: "left+51",
-                            y: "bottom-10",
+                            y: ["bottom-5", bg],
                             width: xpBarFillWidth,
                             height: 2,
                             color: "#aaa850"
@@ -161,22 +165,22 @@ var draw = function () {
 
                         img.add(bg, avatar, xpBar, xpFill, print);
 
-                        _context2.next = 15;
+                        _context2.next = 17;
                         return img.render();
 
-                    case 15:
-                        _context2.next = 17;
+                    case 17:
+                        _context2.next = 19;
                         return img.minify();
 
-                    case 17:
+                    case 19:
                         img = _context2.sent;
-                        _context2.next = 20;
+                        _context2.next = 22;
                         return img.save();
 
-                    case 20:
+                    case 22:
                         console.log("Level card rendered");
 
-                    case 21:
+                    case 23:
                     case "end":
                         return _context2.stop();
                 }
@@ -298,7 +302,7 @@ var draw2 = function () {
     };
 }();
 
-var _Easel = require("./Easel.mjs");
+var _Easel = require("./Easel");
 
 var _Easel2 = _interopRequireDefault(_Easel);
 

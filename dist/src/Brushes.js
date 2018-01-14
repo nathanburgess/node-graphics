@@ -5,27 +5,27 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.RadialGradient = exports.LinearGradient = exports.Rectangle = exports.Text = exports.Printer = exports.Image = undefined;
 
-var _Image = require("./brushes/Image.mjs");
+var _Image = require("./brushes/Image");
 
 var _Image2 = _interopRequireDefault(_Image);
 
-var _Printer = require("./brushes/Printer.mjs");
+var _Printer = require("./brushes/Printer");
 
 var _Printer2 = _interopRequireDefault(_Printer);
 
-var _Text = require("./brushes/Text.mjs");
+var _Text = require("./brushes/Text");
 
 var _Text2 = _interopRequireDefault(_Text);
 
-var _Rectangle = require("./brushes/Rectangle.mjs");
+var _Rectangle = require("./brushes/Rectangle");
 
 var _Rectangle2 = _interopRequireDefault(_Rectangle);
 
-var _LinearGradient = require("./brushes/LinearGradient.mjs");
+var _LinearGradient = require("./brushes/LinearGradient");
 
 var _LinearGradient2 = _interopRequireDefault(_LinearGradient);
 
-var _RadialGradient = require("./brushes/RadialGradient.mjs");
+var _RadialGradient = require("./brushes/RadialGradient");
 
 var _RadialGradient2 = _interopRequireDefault(_RadialGradient);
 

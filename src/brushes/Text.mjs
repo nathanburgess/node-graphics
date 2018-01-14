@@ -1,4 +1,4 @@
-import Brush from "./BaseBrush.mjs";
+import Brush from "./BaseBrush";
 
 /**
  * The Text Brush
