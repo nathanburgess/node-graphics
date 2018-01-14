@@ -4,15 +4,31 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _regenerator = require("babel-runtime/regenerator");
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _asyncToGenerator2 = require("babel-runtime/helpers/asyncToGenerator");
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _typeof2 = require("babel-runtime/helpers/typeof");
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _slicedToArray2 = require("babel-runtime/helpers/slicedToArray");
+
+var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
+
+var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require("babel-runtime/helpers/createClass");
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * The base class for all brushes
@@ -27,8 +43,7 @@ var BaseBrush = function () {
     function BaseBrush() {
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var defaults = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-        _classCallCheck(this, BaseBrush);
+        (0, _classCallCheck3.default)(this, BaseBrush);
 
         this.context = undefined;
 
@@ -78,7 +93,7 @@ var BaseBrush = function () {
      */
 
 
-    _createClass(BaseBrush, [{
+    (0, _createClass3.default)(BaseBrush, [{
         key: "assignOptions",
         value: function assignOptions(defaults, options) {
             // Merge the options with this, save original options in this.options
@@ -96,7 +111,7 @@ var BaseBrush = function () {
             // Calculate the bounding box
             var _getPositionFromWord = this.getPositionFromWord(this.x, this.y);
 
-            var _getPositionFromWord2 = _slicedToArray(_getPositionFromWord, 2);
+            var _getPositionFromWord2 = (0, _slicedToArray3.default)(_getPositionFromWord, 2);
 
             this.x = _getPositionFromWord2[0];
             this.y = _getPositionFromWord2[1];
@@ -105,7 +120,7 @@ var BaseBrush = function () {
             // On construction, if a Gradient is passed in as the color, it's assigned before the width
             // and height are calculated. By reassigning here, the width and height are available and
             // the gradient can be sized to fit this brush.
-            if (_typeof(this.color) === "object") this.color = this.color;
+            if ((0, _typeof3.default)(this.color) === "object") this.color = this.color;
 
             // Determine the center point of the Brush
             var cx = this.x + this.bounds.width * 0.5;
@@ -123,17 +138,17 @@ var BaseBrush = function () {
     }, {
         key: "copyTo",
         value: function () {
-            var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(x, y) {
+            var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(x, y) {
                 var config = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
                 var color, options, brush;
-                return regeneratorRuntime.wrap(function _callee$(_context) {
+                return _regenerator2.default.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
                             case 0:
                                 // Perform a deep-clone of the original brush's options
                                 color = undefined;
 
-                                if (_typeof(this.options.color) === "object") {
+                                if ((0, _typeof3.default)(this.options.color) === "object") {
                                     color = this.options.color;
                                     delete this.options.color;
                                 }
@@ -358,8 +373,8 @@ var BaseBrush = function () {
     }, {
         key: "render",
         value: function () {
-            var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-                return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2() {
+                return _regenerator2.default.wrap(function _callee2$(_context2) {
                     while (1) {
                         switch (_context2.prev = _context2.next) {
                             case 0:
@@ -413,7 +428,6 @@ var BaseBrush = function () {
             return this.fillStyle;
         }
     }]);
-
     return BaseBrush;
 }();
 

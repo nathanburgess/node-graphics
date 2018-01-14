@@ -4,7 +4,21 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _regenerator = require("babel-runtime/regenerator");
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = require("babel-runtime/helpers/asyncToGenerator");
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require("babel-runtime/helpers/createClass");
+
+var _createClass3 = _interopRequireDefault(_createClass2);
 
 var _canvas = require("canvas");
 
@@ -30,10 +44,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 /**
  * The base class for all images
  */
@@ -46,7 +56,7 @@ var Layer = function () {
      * @param {CanvasRenderingContext2D} context
      */
     function Layer(name, canvas, context) {
-        _classCallCheck(this, Layer);
+        (0, _classCallCheck3.default)(this, Layer);
 
         this.name = name;
         this.canvas = canvas;
@@ -66,7 +76,7 @@ var Layer = function () {
      */
 
 
-    _createClass(Layer, [{
+    (0, _createClass3.default)(Layer, [{
         key: "add",
         value: function add(brush) {
             this.brushes.push(brush);
@@ -87,11 +97,11 @@ var Layer = function () {
     }, {
         key: "placeImageAt",
         value: function () {
-            var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(source, x, y) {
+            var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(source, x, y) {
                 var width = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
                 var height = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : undefined;
                 var load, image;
-                return regeneratorRuntime.wrap(function _callee$(_context) {
+                return _regenerator2.default.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
                             case 0:
@@ -157,10 +167,10 @@ var Layer = function () {
     }, {
         key: "render",
         value: function () {
-            var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+            var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3() {
                 var _this = this;
 
-                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                return _regenerator2.default.wrap(function _callee3$(_context3) {
                     while (1) {
                         switch (_context3.prev = _context3.next) {
                             case 0:
@@ -169,8 +179,8 @@ var Layer = function () {
 
                             case 2:
                                 this.brushes.forEach(function () {
-                                    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(brush) {
-                                        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                                    var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(brush) {
+                                        return _regenerator2.default.wrap(function _callee2$(_context2) {
                                             while (1) {
                                                 switch (_context2.prev = _context2.next) {
                                                     case 0:
@@ -228,10 +238,10 @@ var Layer = function () {
     }, {
         key: "save",
         value: function () {
-            var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+            var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4() {
                 var _this2 = this;
 
-                return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                return _regenerator2.default.wrap(function _callee4$(_context4) {
                     while (1) {
                         switch (_context4.prev = _context4.next) {
                             case 0:
@@ -312,10 +322,10 @@ var Layer = function () {
     }, {
         key: "createImage",
         value: function () {
-            var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+            var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5() {
                 var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
                 var image;
-                return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                return _regenerator2.default.wrap(function _callee5$(_context5) {
                     while (1) {
                         switch (_context5.prev = _context5.next) {
                             case 0:
@@ -356,7 +366,6 @@ var Layer = function () {
             return new Brushes.Printer(options);
         }
     }]);
-
     return Layer;
 }();
 

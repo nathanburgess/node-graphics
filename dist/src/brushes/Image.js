@@ -4,9 +4,33 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _regenerator = require("babel-runtime/regenerator");
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _slicedToArray2 = require("babel-runtime/helpers/slicedToArray");
+
+var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
+
+var _asyncToGenerator2 = require("babel-runtime/helpers/asyncToGenerator");
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require("babel-runtime/helpers/createClass");
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = require("babel-runtime/helpers/possibleConstructorReturn");
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = require("babel-runtime/helpers/inherits");
+
+var _inherits3 = _interopRequireDefault(_inherits2);
 
 var _BaseBrush = require("./BaseBrush");
 
@@ -30,26 +54,17 @@ var _fs2 = _interopRequireDefault(_fs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 /**
  * The base class for all images
  */
 var Image = function (_Brush) {
-    _inherits(Image, _Brush);
+    (0, _inherits3.default)(Image, _Brush);
 
     function Image() {
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        (0, _classCallCheck3.default)(this, Image);
 
-        _classCallCheck(this, Image);
-
-        var _this = _possibleConstructorReturn(this, (Image.__proto__ || Object.getPrototypeOf(Image)).call(this, options, {
+        var _this = (0, _possibleConstructorReturn3.default)(this, (Image.__proto__ || Object.getPrototypeOf(Image)).call(this, options, {
             source: undefined,
             x: 0,
             y: 0,
@@ -62,15 +77,15 @@ var Image = function (_Brush) {
         return _this;
     }
 
-    _createClass(Image, [{
+    (0, _createClass3.default)(Image, [{
         key: "loadImage",
         value: function () {
-            var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+            var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2() {
                 var _this2 = this;
 
                 var image, load, _getPositionFromWord, _getPositionFromWord2, stream;
 
-                return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                return _regenerator2.default.wrap(function _callee2$(_context2) {
                     while (1) {
                         switch (_context2.prev = _context2.next) {
                             case 0:
@@ -105,7 +120,7 @@ var Image = function (_Brush) {
 
                                 if (!this.height) this.height = this.image.height * this.width / this.image.width;
                                 _getPositionFromWord = this.getPositionFromWord(this.x, this.options.y);
-                                _getPositionFromWord2 = _slicedToArray(_getPositionFromWord, 2);
+                                _getPositionFromWord2 = (0, _slicedToArray3.default)(_getPositionFromWord, 2);
                                 this.x = _getPositionFromWord2[0];
                                 this.y = _getPositionFromWord2[1];
 
@@ -120,8 +135,8 @@ var Image = function (_Brush) {
                                 stream = (0, _requestPromiseNative2.default)(this.source).pipe(_fs2.default.createWriteStream(this.filename));
 
                                 this.jobs.push(new Promise(function (resolve) {
-                                    stream.on("finish", _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                                        return regeneratorRuntime.wrap(function _callee$(_context) {
+                                    stream.on("finish", (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+                                        return _regenerator2.default.wrap(function _callee$(_context) {
                                             while (1) {
                                                 switch (_context.prev = _context.next) {
                                                     case 0:
@@ -161,10 +176,10 @@ var Image = function (_Brush) {
     }, {
         key: "paint",
         value: function () {
-            var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+            var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3() {
                 var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
                 var x, y;
-                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                return _regenerator2.default.wrap(function _callee3$(_context3) {
                     while (1) {
                         switch (_context3.prev = _context3.next) {
                             case 0:
@@ -206,7 +221,6 @@ var Image = function (_Brush) {
             return paint;
         }()
     }]);
-
     return Image;
 }(_BaseBrush2.default);
 

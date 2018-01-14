@@ -1,19 +1,19 @@
 {
-    "name"           : "easel",
-    "version"        : "0.0.2",
-    "description"    : "A graphics library built around node-canvas to make creation and editing of procedural images easier.",
-    "author"         : "Nathan Burgess",
-    "license"        : "MIT",
-    "main"           : "dist/Easel.js",
-    "repository"     : {
+    "name": "easel",
+    "version": "0.0.2",
+    "description": "A graphics library built around node-canvas to make creation and editing of procedural images easier.",
+    "author": "Nathan Burgess",
+    "license": "MIT",
+    "main": "dist/Easel.js",
+    "repository": {
         "type": "git",
-        "url" : "github:nathanburgess/easel"
+        "url": "github:nathanburgess/easel"
     },
-    "scripts"        : {
+    "scripts": {
         "build": "echo Please run 'babel **/** --out-dir dist' on your own",
         "watch": "nodemon --experimental-modules index"
     },
-    "keywords"       : [
+    "keywords": [
         "easel",
         "canvas",
         "node-canvas",
@@ -25,21 +25,28 @@
         "graphics",
         "graphic"
     ],
-    "dependencies"   : {
-        "canvas"                : "^2.0.0-alpha.9",
-        "gif-frames"            : "^0.4.0",
-        "request"               : "^2.83.0",
+    "dependencies": {
+        "babel-runtime": "^6.26.0",
+        "canvas": "^2.0.0-alpha.9",
+        "gif-frames": "^0.4.0",
+        "request": "^2.83.0",
         "request-promise-native": "^1.0.5",
-        "uuid"                  : "^3.1.0"
+        "uuid": "^3.1.0"
     },
     "devDependencies": {
-        "babel-cli"          : "^6.26.0",
-        "babel-preset-env"   : "^1.6.1",
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.26.0",
+        "babel-loader": "^7.1.2",
+        "babel-plugin-transform-runtime": "^6.23.0",
+        "babel-polyfill": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
+        "babel-preset-es2015": "^6.24.1",
         "babel-preset-es2017": "^6.24.1",
-        "chai"               : "^4.1.2",
-        "mocha"              : "^4.1.0"
+        "babel-preset-stage-0": "^6.24.1",
+        "chai": "^4.1.2",
+        "mocha": "^4.1.0"
     },
-    "engines"        : {
+    "engines": {
         "node": ">=9.2.0"
     }
 }
