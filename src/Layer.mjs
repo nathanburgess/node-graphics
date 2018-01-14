@@ -119,6 +119,18 @@ export default class Layer {
         });
     }
 
+    pngStream() {
+        return this.canvas.pngStream();
+    }
+
+    toBuffer() {
+        return this.canvas.toBuffer();
+    }
+
+    toDataUrl() {
+        return this.canvas.toDataURL();
+    }
+
     /**
      * Create a rectangle brush
      *

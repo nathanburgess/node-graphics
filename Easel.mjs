@@ -1,8 +1,10 @@
 import EventEmitter from "events";
 import Canvas from "canvas";
+import os from "os";
 import fs from "fs";
 import Layer from "./src/Layer";
 import * as Brushes from "./src/Brushes";
+import uuid from "uuid/v4";
 
 global.noop = function () {
 };
@@ -20,7 +22,8 @@ export default class Easel extends EventEmitter {
             lineWidth        : 2,
             strokeColor      : "black",
             fillColor        : "white",
-            trim             : true
+            trim             : true,
+            filename         : `${os.tmpdir()}/${uuid()}.png`
         };
 
         this.options = Object.assign(this, defaults, options);
@@ -105,15 +108,32 @@ export default class Easel extends EventEmitter {
 
     async save(filename) {
         await Promise.all(this.operations);
-        if (!filename) filename = "undefined.png";
+        if (!filename) filename = this.filename;
+        else this.filename = filename;
         let base = this.layer("base");
 
         return new Promise(resolve => {
             let stream = base.canvas.pngStream().pipe(fs.createWriteStream(filename));
             stream.on("finish", data => {
-                resolve(data);
+                return resolve(filename);
             });
         });
+    }
+
+    delete() {
+        fs.unlinkSync(this.filename);
+    }
+
+    pngStream() {
+        return this.layer("base").pngStream();
+    }
+
+    toBuffer() {
+        return this.layer("base").toBuffer();
+    }
+
+    toDataUrl() {
+        return this.layer("base").toDataUrl();
     }
 
     /**
@@ -173,15 +193,15 @@ export default class Easel extends EventEmitter {
 }
 
 function checkRadius(a, r) {
-    if(a < 2 * r) return a / 2;
+    if (a < 2 * r) return a / 2;
     return r;
 }
 
 Canvas.CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-    r.topLeft = checkRadius(w, r.topLeft);
-    r.topRight = checkRadius(h, r.topRight);
+    r.topLeft     = checkRadius(w, r.topLeft);
+    r.topRight    = checkRadius(h, r.topRight);
     r.bottomRight = checkRadius(w, r.bottomRight);
-    r.bottomLeft = checkRadius(h, r.bottomLeft);
+    r.bottomLeft  = checkRadius(h, r.bottomLeft);
 
     this.beginPath();
     this.moveTo(x + r.topLeft, y);
