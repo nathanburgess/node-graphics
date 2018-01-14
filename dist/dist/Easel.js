@@ -36,10 +36,6 @@ var _canvas = require("canvas");
 
 var _canvas2 = _interopRequireDefault(_canvas);
 
-var _os = require("os");
-
-var _os2 = _interopRequireDefault(_os);
-
 var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
@@ -52,13 +48,21 @@ var _Brushes = require("./src/Brushes");
 
 var Brushes = _interopRequireWildcard(_Brushes);
 
-var _v = require("uuid/v4");
+function _interopRequireWildcard(obj) {
+    if (obj && obj.__esModule) {
+        return obj;
+    } else {
+        var newObj = {};if (obj != null) {
+            for (var key in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+            }
+        }newObj.default = obj;return newObj;
+    }
+}
 
-var _v2 = _interopRequireDefault(_v);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
 global.noop = function () {};
 
@@ -79,8 +83,7 @@ var Easel = function (_EventEmitter) {
             lineWidth: 2,
             strokeColor: "black",
             fillColor: "white",
-            trim: true,
-            filename: _os2.default.tmpdir() + "/" + (0, _v2.default)() + ".png"
+            trim: true
         };
 
         _this.options = Object.assign(_this, defaults, options);
@@ -105,7 +108,6 @@ var Easel = function (_EventEmitter) {
      * @param {string} [options.weight] - An optional font weight
      * @param {string} [options.style] - An optional font style
      */
-
 
     (0, _createClass3.default)(Easel, [{
         key: "activateLayer",
@@ -160,7 +162,6 @@ var Easel = function (_EventEmitter) {
                             case 0:
                                 layers = [];
 
-
                                 this.layers.map(function (layer) {
                                     layers.push(layer.render());
                                 });
@@ -213,12 +214,12 @@ var Easel = function (_EventEmitter) {
                                 return Promise.all(this.operations);
 
                             case 2:
-                                if (!filename) filename = this.filename;else this.filename = filename;
+                                if (!filename) filename = "undefined.png";
                                 base = this.layer("base");
                                 return _context2.abrupt("return", new Promise(function (resolve) {
                                     var stream = base.canvas.pngStream().pipe(_fs2.default.createWriteStream(filename));
                                     stream.on("finish", function (data) {
-                                        return resolve(filename);
+                                        resolve(data);
                                     });
                                 }));
 
@@ -236,26 +237,6 @@ var Easel = function (_EventEmitter) {
 
             return save;
         }()
-    }, {
-        key: "delete",
-        value: function _delete() {
-            _fs2.default.unlinkSync(this.filename);
-        }
-    }, {
-        key: "pngStream",
-        value: function pngStream() {
-            return this.layer("base").pngStream();
-        }
-    }, {
-        key: "toBuffer",
-        value: function toBuffer() {
-            return this.layer("base").toBuffer();
-        }
-    }, {
-        key: "toDataUrl",
-        value: function toDataUrl() {
-            return this.layer("base").toDataUrl();
-        }
 
         /**
          * Returns an image that has been re-sized to fit only the area in which something was drawn
@@ -346,7 +327,6 @@ var Easel = function (_EventEmitter) {
 }(_events2.default);
 
 exports.default = Easel;
-
 
 function checkRadius(a, r) {
     if (a < 2 * r) return a / 2;
