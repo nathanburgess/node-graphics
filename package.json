@@ -1,6 +1,6 @@
 {
     "name": "easel",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "A graphics library built around node-canvas to make creation and editing of procedural images easier.",
     "author": "Nathan Burgess",
     "license": "MIT",
