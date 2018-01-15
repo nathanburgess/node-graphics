@@ -47,7 +47,7 @@ export default class Image extends Brush {
                 stream.on("finish", async () => {
                     this.source = this.filename;
                     await this.loadImage();
-                    resolve("all done");
+                    resolve();
                 });
             }));
         }
@@ -62,14 +62,13 @@ export default class Image extends Brush {
 
         if (!this.image) throw new Error("No image was provided for Image.paint()");
 
-
         if (this.width) {
             this.context.beginPath();
             this.context.arc(this.center.x, this.center.y, this.borderRadius, 0, 2 * Math.PI, false);
             this.context.clip();
-            this.context.drawImage(this.image, x, y, this.width, this.height);
+            this.context.drawImage(await this.image, x, y, this.width, this.height);
         }
         else
-            this.context.drawImage(this.image, x, y);
+            this.context.drawImage(await this.image, x, y);
     }
 }

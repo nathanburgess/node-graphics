@@ -114,7 +114,7 @@ export default class Easel extends EventEmitter {
 
         return new Promise(resolve => {
             let stream = base.canvas.pngStream().pipe(fs.createWriteStream(filename));
-            stream.on("finish", data => {
+            return stream.on("finish", () => {
                 return resolve(filename);
             });
         });

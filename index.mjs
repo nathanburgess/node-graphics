@@ -127,13 +127,13 @@ async function d2Info() {
         color        : nightfallEarned ? styleEarned : styleUnearned
     });
     let engram = await img.createImage({
-        source : "./images/destiny/earnedClanEngram.png",
+        source : "images/destiny/earnedClanEngram.png",
         x      : -500,
         y      : -500,
         width  : tileSize - tilePadding
     });
     let icon   = await img.createImage({
-        source : "./images/destiny/nightfall.png",
+        source : "images/destiny/nightfall.png",
         x      : iconX,
         y      : iconY,
         width  : iconSize
@@ -153,13 +153,13 @@ async function d2Info() {
     if (pvpEarned) img.add(engram.copyTo(engramX + tileStep * 3, engramY));
 
     // Display the icons for each status
-    img.add(icon.copyTo(iconX + tileStep, iconY, {source : "./images/destiny/trials.png"}));
-    img.add(icon.copyTo(iconX + tileStep * 2, iconY, {source : "./images/destiny/raid.png"}));
-    img.add(icon.copyTo(iconX + tileStep * 3, iconY, {source : "./images/destiny/pvp.png"}));
+    img.add(icon.copyTo(iconX + tileStep, iconY, {source : "images/destiny/trials.png"}));
+    img.add(icon.copyTo(iconX + tileStep * 2, iconY, {source : "images/destiny/raid.png"}));
+    img.add(icon.copyTo(iconX + tileStep * 3, iconY, {source : "images/destiny/pvp.png"}));
 
     await img.render();
     img = img.minify();
-    await img.save();
+    await img.save("test.png");
     console.log("d2Info complete");
 }
 
@@ -223,7 +223,7 @@ async function draw() {
 }
 
 console.log("Running a draw function...");
-draw();
+d2Info();
 console.log("Exiting program");
 
 process.on("unhandledRejection", (e, s) => {
