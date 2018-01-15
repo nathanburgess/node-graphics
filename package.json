@@ -1,6 +1,6 @@
 {
     "name": "node-graphics",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "A graphics library built around node-canvas to make creation and editing of procedural images easier.",
     "author": "Nathan Burgess",
     "license": "MIT",
