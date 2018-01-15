@@ -87,11 +87,23 @@ export default class Layer {
      */
     async render() {
         await Promise.all(this.jobs);
-        this.brushes.forEach(async brush => {
+        let brushes = [];
+
+        this.brushes.reverse().map(async brush => {
             brush = await brush;
-            await brush.render();
+            console.log("Rendering brush " + brush.constructor.name);
+            brushes.push(brush.render());
             this.calculateMaxBounds(brush.bounds);
         });
+
+        let results = await Promise.all(brushes);
+
+        //this.brushes.forEach(async brush => {
+        //    brush = await brush;
+        //    await brush.render();
+        //    this.calculateMaxBounds(brush.bounds);
+        //});
+
         this.drawState = "done";
         await this.save();
         return {name : this.name, bounds : this.bounds};

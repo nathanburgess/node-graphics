@@ -22,15 +22,16 @@ export default class BaseBrush {
         this.bounds = {top : undefined, right : undefined, bottom : undefined, left : undefined};
 
         this.borderSpec = {
-            color       : "transparent",
-            type        : "outer",
-            size        : 0,
-            radius      : 0,
-            topLeft     : 0,
-            topRight    : 0,
-            bottomRight : 0,
-            bottomLeft  : 0,
+            color       : options.borderColor || "transparent",
+            type        : options.borderType || "outer",
+            size        : options.borderSize || 0,
+            radius      : options.borderRadius || 0,
+            topLeft     : options.borderTopLeft || 0,
+            topRight    : options.borderTopRight || 0,
+            bottomRight : options.borderBottomRight || 0,
+            bottomLeft  : options.borderBottomLeft || 0,
         };
+        this.calculateRadii(this.borderSpec.radius);
 
         this.center = {
             x : options.context.canvas.width * 0.5,
@@ -184,7 +185,7 @@ export default class BaseBrush {
         else if (x === "right") xPos = xParent.bounds.right - this.width;
 
         if (y === "center")
-            yPos = (yParent.bounds.top + yParent.bounds.height) * 0.5 - height *0.5 - offset;
+            yPos = (yParent.bounds.top + yParent.bounds.height) * 0.5 - height * 0.5 - offset;
         else if (y === "bottom") yPos = yParent.height - height - offset;
 
         if (y === "top") yPos = offset;
@@ -242,6 +243,7 @@ export default class BaseBrush {
     }
 
     calculateRadii(style) {
+        style = String(style);
         let radii = style.split(" ").map(x => Number.parseInt(x));
 
         let tRight, bRight, bLeft;

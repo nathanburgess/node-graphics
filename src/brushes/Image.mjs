@@ -17,7 +17,8 @@ export default class Image extends Brush {
             height : undefined,
             color  : "transparent"
         });
-        this.jobs = [];
+        this.jobs    = [];
+        this.noPaint = false;
     }
 
     async loadImage() {
@@ -25,7 +26,11 @@ export default class Image extends Brush {
             let image  = new Canvas.Image;
             image.src  = this.image;
             this.image = image;
-            return;
+            return this;
+        }
+        else if (!this.source) {
+            this.noPaint = true;
+            return this;
         }
 
         this.source = this.source.toLowerCase();
@@ -56,18 +61,19 @@ export default class Image extends Brush {
 
     async paint(options = {}) {
         await Promise.all(this.jobs);
+        if (this.noPaint) return this;
 
         let x = options.x || this.x;
         let y = options.y || this.y;
 
         if (!this.image) throw new Error("No image was provided for Image.paint()");
 
-        if (this.width) {
-            this.context.beginPath();
-            this.context.arc(this.center.x, this.center.y, this.borderRadius, 0, 2 * Math.PI, false);
-            this.context.clip();
+        this.context.beginPath();
+        this.context.arc(this.center.x, this.center.y, this.borderRadius, 0, 2 * Math.PI, false);
+        this.context.clip();
+
+        if (this.width)
             this.context.drawImage(await this.image, x, y, this.width, this.height);
-        }
         else
             this.context.drawImage(await this.image, x, y);
     }

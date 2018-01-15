@@ -89,7 +89,8 @@ export default class Easel extends EventEmitter {
     async render() {
         let layers = [];
 
-        this.layers.map(layer => {
+        this.layers.reverse().map(layer => {
+            console.log("Rendering layer " + layer.name);
             layers.push(layer.render());
         });
 

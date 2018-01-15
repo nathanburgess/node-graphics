@@ -96,7 +96,7 @@ async function d2Info() {
     let iconX            = tileX + iconDiff * 0.5,
         iconY            = tileY + iconDiff * 0.5;
     let nightfallEarned  = true,
-        trialsEarned     = false,
+        trialsEarned     = true,
         raidEarned       = false,
         pvpEarned        = true;
     let earned           = {color : styleEarned};
@@ -109,22 +109,12 @@ async function d2Info() {
         smoothingQuality : "high"
     });
 
-    let g  = img.createGradient().add(0, "#ae005d").add(1, "#3100ff");
-    let bg = img.createRect({
-        x            : 0, y : 0,
-        width        : tileSize * 4 + tileX * 2 + tileSpace * 3,
-        height       : tileSize + tileY * 2,
-        borderRadius : tileBorderRadius,
-        color        : g
-    });
-    //img.add(bg);
-
     let tile   = img.createRect({
         x            : tileX,
         y            : tileY,
         width        : tileSize,
         borderRadius : tileBorderRadius,
-        color        : nightfallEarned ? styleEarned : styleUnearned
+        color        : nightfallEarned ? styleEarned : styleUnearned,
     });
     let engram = await img.createImage({
         source : "images/destiny/earnedClanEngram.png",
@@ -133,13 +123,12 @@ async function d2Info() {
         width  : tileSize - tilePadding
     });
     let icon   = await img.createImage({
-        source : "images/destiny/nightfall.png",
-        x      : iconX,
-        y      : iconY,
-        width  : iconSize
+        x     : iconX,
+        y     : iconY,
+        width : iconSize
     });
 
-    img.add(engram, tile, icon);
+    img.add(engram, tile);
 
     // Copy the tiles across the image
     img.add(tile.copyTo(tileX + tileStep, tileY, trialsEarned ? earned : unearned));
@@ -153,6 +142,7 @@ async function d2Info() {
     if (pvpEarned) img.add(engram.copyTo(engramX + tileStep * 3, engramY));
 
     // Display the icons for each status
+    img.add(icon.copyTo(iconX, iconY, {source : "images/destiny/nightfall.png"}));
     img.add(icon.copyTo(iconX + tileStep, iconY, {source : "images/destiny/trials.png"}));
     img.add(icon.copyTo(iconX + tileStep * 2, iconY, {source : "images/destiny/raid.png"}));
     img.add(icon.copyTo(iconX + tileStep * 3, iconY, {source : "images/destiny/pvp.png"}));
@@ -190,7 +180,7 @@ async function draw() {
         size   : 31,
         color  : "white"
     });
-    print.text("Atrox").at(["left+" + (avatar.bounds.right+2), bg], ["center", bg]);
+    print.text("Atrox").at(["left+" + (avatar.bounds.right + 2), bg], ["center", bg]);
     print.text("76").at(["right-5", bg], ["center", bg]);
 
     let xpPercent      = 75;
@@ -215,7 +205,7 @@ async function draw() {
     img.add(bg, avatar, xpBar, xpFill, print);
 
     await img.render();
-    img = await img.minify();
+    img     = await img.minify();
     let fin = await img.save();
     console.log(fin);
     img.delete();
