@@ -111,7 +111,7 @@ class Layer {
         await Promise.all(this.jobs);
         let brushes = [];
 
-        this.brushes.reverse().map(async brush => {
+        this.brushes.map(async brush => {
             brush = await brush;
             brushes.push(brush.render());
             this.calculateMaxBounds(brush.bounds);
