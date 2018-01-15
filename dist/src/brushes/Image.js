@@ -52,9 +52,7 @@ var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * The base class for all images
@@ -147,7 +145,7 @@ var Image = function (_Brush) {
                                                         return _this2.loadImage();
 
                                                     case 3:
-                                                        resolve("all done");
+                                                        resolve();
 
                                                     case 4:
                                                     case "end":
@@ -200,15 +198,43 @@ var Image = function (_Brush) {
                                 throw new Error("No image was provided for Image.paint()");
 
                             case 6:
+                                if (!this.width) {
+                                    _context3.next = 21;
+                                    break;
+                                }
 
-                                if (this.width) {
-                                    this.context.beginPath();
-                                    this.context.arc(this.center.x, this.center.y, this.borderRadius, 0, 2 * Math.PI, false);
-                                    this.context.clip();
-                                    this.context.drawImage(this.image, x, y, this.width, this.height);
-                                } else this.context.drawImage(this.image, x, y);
+                                this.context.beginPath();
+                                this.context.arc(this.center.x, this.center.y, this.borderRadius, 0, 2 * Math.PI, false);
+                                this.context.clip();
+                                _context3.t0 = this.context;
+                                _context3.next = 13;
+                                return this.image;
 
-                            case 7:
+                            case 13:
+                                _context3.t1 = _context3.sent;
+                                _context3.t2 = x;
+                                _context3.t3 = y;
+                                _context3.t4 = this.width;
+                                _context3.t5 = this.height;
+
+                                _context3.t0.drawImage.call(_context3.t0, _context3.t1, _context3.t2, _context3.t3, _context3.t4, _context3.t5);
+
+                                _context3.next = 28;
+                                break;
+
+                            case 21:
+                                _context3.t6 = this.context;
+                                _context3.next = 24;
+                                return this.image;
+
+                            case 24:
+                                _context3.t7 = _context3.sent;
+                                _context3.t8 = x;
+                                _context3.t9 = y;
+
+                                _context3.t6.drawImage.call(_context3.t6, _context3.t7, _context3.t8, _context3.t9);
+
+                            case 28:
                             case "end":
                                 return _context3.stop();
                         }

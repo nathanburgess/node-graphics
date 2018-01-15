@@ -28,9 +28,7 @@ var _createClass2 = require("babel-runtime/helpers/createClass");
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * The base class for all brushes
@@ -93,6 +91,7 @@ var BaseBrush = function () {
      * @param {Object} defaults - Some default settings
      * @param {Object} options - The settings to apply to the Brush
      */
+
 
     (0, _createClass3.default)(BaseBrush, [{
         key: "assignOptions",
@@ -424,8 +423,8 @@ var BaseBrush = function () {
          *
          * @returns {string|Gradient}
          */
-
-        , get: function get() {
+        ,
+        get: function get() {
             return this.fillStyle;
         }
     }]);

@@ -40,21 +40,9 @@ var _Brushes = require("./Brushes");
 
 var Brushes = _interopRequireWildcard(_Brushes);
 
-function _interopRequireWildcard(obj) {
-    if (obj && obj.__esModule) {
-        return obj;
-    } else {
-        var newObj = {};if (obj != null) {
-            for (var key in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-            }
-        }newObj.default = obj;return newObj;
-    }
-}
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * The base class for all images
@@ -86,6 +74,7 @@ var Layer = function () {
      * @param {BaseBrush} brush - The brush to add
      * @returns {Layer}
      */
+
 
     (0, _createClass3.default)(Layer, [{
         key: "add",
@@ -124,6 +113,7 @@ var Layer = function () {
 
                             case 4:
                                 image = _context.sent;
+
 
                                 if (width && !height) {
                                     this.context.drawImage(image, x, y, width, width);
@@ -289,6 +279,21 @@ var Layer = function () {
 
             return save;
         }()
+    }, {
+        key: "pngStream",
+        value: function pngStream() {
+            return this.canvas.pngStream();
+        }
+    }, {
+        key: "toBuffer",
+        value: function toBuffer() {
+            return this.canvas.toBuffer();
+        }
+    }, {
+        key: "toDataUrl",
+        value: function toDataUrl() {
+            return this.canvas.toDataURL();
+        }
 
         /**
          * Create a rectangle brush

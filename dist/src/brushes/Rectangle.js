@@ -28,9 +28,7 @@ var _LinearGradient = require("./LinearGradient");
 
 var _LinearGradient2 = _interopRequireDefault(_LinearGradient);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * The Rectangle Brush

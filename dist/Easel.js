@@ -217,7 +217,7 @@ var Easel = function (_EventEmitter) {
                                 base = this.layer("base");
                                 return _context2.abrupt("return", new Promise(function (resolve) {
                                     var stream = base.canvas.pngStream().pipe(_fs2.default.createWriteStream(filename));
-                                    stream.on("finish", function (data) {
+                                    return stream.on("finish", function () {
                                         return resolve(filename);
                                     });
                                 }));

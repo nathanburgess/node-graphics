@@ -29,9 +29,7 @@ var _RadialGradient = require("./brushes/RadialGradient");
 
 var _RadialGradient2 = _interopRequireDefault(_RadialGradient);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.Image = _Image2.default;
 exports.Printer = _Printer2.default;

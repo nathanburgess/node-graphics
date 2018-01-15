@@ -20,9 +20,7 @@ var _Gradient2 = require("./Gradient");
 
 var _Gradient3 = _interopRequireDefault(_Gradient2);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * The base class for all images

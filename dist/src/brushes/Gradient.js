@@ -32,9 +32,7 @@ var _LinearGradient = require("./LinearGradient");
 
 var _LinearGradient2 = _interopRequireDefault(_LinearGradient);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * The base class for all images
@@ -61,6 +59,7 @@ var Gradient = function (_Brush) {
     /**
      * Convert the angle into radians
      */
+
 
     (0, _createClass3.default)(Gradient, [{
         key: "convertAngle",
@@ -132,6 +131,7 @@ var Gradient = function (_Brush) {
 
             ix = _getPointOnRect4[0];
             iy = _getPointOnRect4[1];
+
 
             if (this.constructor.name === "LinearGradient") this.gradient = this.context.createLinearGradient(x, y, ix, iy);
             return this;
