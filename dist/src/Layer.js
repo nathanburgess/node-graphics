@@ -113,7 +113,6 @@ class Layer {
 
         this.brushes.reverse().map(async brush => {
             brush = await brush;
-            console.log("Rendering brush " + brush.constructor.name);
             brushes.push(brush.render());
             this.calculateMaxBounds(brush.bounds);
         });

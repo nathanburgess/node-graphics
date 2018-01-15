@@ -1,10 +1,5 @@
 import Easel from "./Easel";
-import Canvas from "canvas";
-import fs from "fs";
 import gf from "gif-frames";
-import child from "child_process";
-import "babel-core/register";
-import "babel-polyfill";
 
 Easel.registerFont("fonts/futura.ttf", {
     family : "Futura"
@@ -149,8 +144,8 @@ async function d2Info() {
 
     await img.render();
     img = img.minify();
-    await img.save("test.png");
-    console.log("d2Info complete");
+    await img.save("image_d2info.png");
+    console.log("d2Info rendered");
 }
 
 async function draw() {
@@ -206,15 +201,12 @@ async function draw() {
 
     await img.render();
     img     = await img.minify();
-    let fin = await img.save();
-    console.log(fin);
-    img.delete();
+    await img.save("image_level.png");
     console.log("Level card rendered");
 }
 
-console.log("Running a draw function...");
+draw();
 d2Info();
-console.log("Exiting program");
 
 process.on("unhandledRejection", (e, s) => {
     console.log(e, s);

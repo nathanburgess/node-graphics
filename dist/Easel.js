@@ -119,7 +119,6 @@ class Easel extends _events2.default {
         let layers = [];
 
         this.layers.reverse().map(layer => {
-            console.log("Rendering layer " + layer.name);
             layers.push(layer.render());
         });
 
