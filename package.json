@@ -1,5 +1,5 @@
 {
-    "name": "easel",
+    "name": "node-graphics",
     "version": "0.0.3",
     "description": "A graphics library built around node-canvas to make creation and editing of procedural images easier.",
     "author": "Nathan Burgess",
@@ -7,23 +7,23 @@
     "main": "dist/Easel.js",
     "repository": {
         "type": "git",
-        "url": "github:nathanburgess/easel"
+        "url": "github:nathanburgess/node-graphics"
     },
     "scripts": {
         "build": "echo Please run 'babel **/** --out-dir dist' on your own",
         "watch": "nodemon --experimental-modules index"
     },
     "keywords": [
-        "easel",
+        "node-graphics",
+        "graphics",
+        "graphic",
         "canvas",
         "node-canvas",
         "image",
         "images",
         "image",
         "processing",
-        "compositing",
-        "graphics",
-        "graphic"
+        "compositing"
     ],
     "dependencies": {
         "babel-runtime": "^6.26.0",
